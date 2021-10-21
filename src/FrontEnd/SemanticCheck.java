@@ -276,9 +276,9 @@ public class SemanticCheck implements ASTVisitor {
 
     @Override
     public void visit(AssignDeclearNode node) {
+        node.Expr.accept(this);
         node.Decl.accept(this);
         VarSymbol NowVar=NowScope.FindVar(node.Decl.Identify,node.Decl.pos);
-        node.Expr.accept(this);
         if (!NowVar.Vartype.AssignPermit(node.Expr.ValueType))
             throw new SemanticError("Different Type",node.pos);
     }
@@ -408,7 +408,7 @@ public class SemanticCheck implements ASTVisitor {
             for (int i=0;i<Num;i++)
             {
                 node.FunctionList.get(i).accept(this);
-                if (!node.FunctionList.get(i).ValueType.SameType(MemFunc.ParaType.get(i)))
+                if (!node.FunctionList.get(i).ValueType.AssignPermit(MemFunc.ParaType.get(i)))
                     throw new SemanticError("ParaList Type is different",node.pos);
             }
             node.ValueType=MemFunc.ReturnType;
@@ -425,7 +425,7 @@ public class SemanticCheck implements ASTVisitor {
             for (int i=0;i<Num;i++)
             {
                 node.FunctionList.get(i).accept(this);
-                if (!node.FunctionList.get(i).ValueType.SameType(MemFunc.ParaType.get(i)))
+                if (!node.FunctionList.get(i).ValueType.AssignPermit(MemFunc.ParaType.get(i)))
                     throw new SemanticError("ParaList Type is different",node.pos);
             }
             node.ValueType=MemFunc.ReturnType;
