@@ -71,77 +71,106 @@ This:'this';
 WS: [ \t]+ -> skip;
 NEWLINE: ('\r' '\n'? | '\n') -> skip;
 BLOCK_COMMENT: '/*' .*? '*/' -> skip;
-LINE_COMMENT: '//' ~[\r\n]* -> skip;
+NotationLine: '//' .*? ('\n' | EOF) -> skip;
 
 
-
-
-program:(functionDef|classDef|varDef)* EOF;
+program:(programDef)* EOF;
+programDef
+:functionDef #programFuncDef
+|classDef    #programClassDef
+|varDef      #programVarDef
+;
 //mainFn:Int 'main' '(' ')' suite EOF;
 suite:'{' statement* '}';
 statement
-    :suite
-    |varDef
+    :suite                                                                                  #suiteStat
+    |varDef                                                                                 #vardefineStat
     |'if' '(' expression ')' trueStmt=statement
-        (Else falseStmt=statement)?
-    |While '(' expression ')' statement
-    |For '(' init=expression ';' check=expression ';' step=expression ')' statement
-    |Break ';'
-    |Continue ';'
-    |Return expression? ';'
-    |expression ';'
-    |';'
+        (Else falseStmt=statement)?                                                         #ifStat
+    |While '(' expression ')' statement                                                     #whilestate
+    |For '(' (init=expression)? ';' (check=expression)? ';' (step=expression)? ')' statement         #forStat
+    |Break ';'                                                                              #breakStat
+    |Continue ';'                                                                           #continueStat
+    |Return expression? ';'                                                                 #returnStat
+    |expression ';'                                                                         #exprssionStat
+    |';'                                                                                    #emptyStat
     ;
-classDef:Class Identifier '{' (varDef|functionDef|constructDef)* '}' ';';
-functionDef
-:(type|Void) Identifier '(' functionParameterList? ')' suite;
+classDef:Class Identifier '{' (varDef|functionDef|constructDef )* '}' ';';
+//classState
+//:varDef             #ClassVarDef
+//|functionDef        #ClassFuncDef
+//|constructDef       #ClassConstructDef
+//;
+functionDef:functiontype Identifier '(' functionParameterList? ')' suite;
 constructDef:Identifier '('  ')' suite;
-varDef:type onevarDef (',' onevarDef)* ';';
-onevarDef:Identifier ('=' expression)?;
-lambda:'[&]'('(' functionParameterList? ')')? '->' suite '('functionInsList?')' ;
+varDef
+:type Identifier (',' Identifier)* ';'      #manyDef
+|type Identifier '=' expression    ';'      #assignDef
+;
+//lambda:'[&]'('(' functionParameterList? ')')? '->' suite '('functionInsList?')' ;
 expression
     :primary                                                #atomExpr
-    |lambda                                                 #lambdaExpr
-    |<assoc=right> op='-' expression                        #mathExpr
-    |<assoc=right> op='~' expression                        #mathExpr
-    |<assoc=right> op='!' expression                        #mathExpr
+    |<assoc=right> newsentence                              #newExpr
+//    |lambda                                                 #lambdaExpr
+    |expression '.' Identifier                              #pointExpr
+    |expression '(' functionInsList ')'                     #functionExpr
+    |expression '[' expression ']'                          #subscriptExpr
+    |<assoc=right> op='-' expression                        #prefixExpr
+    |<assoc=right> op='~' expression                        #prefixExpr
+    |<assoc=right> op='!' expression                        #prefixExpr
     |<assoc=right> op=('++'|'--') expression                #prefixExpr
     |expression op=('++'|'--')                              #backfixExpr
-    |expression '.' Identifier                              #pointExpr
-    |expression '(' functionInsList? ')'                    #functionExpr
-    |expression '[' expression ']'                          #subscriptExpr
-    |expression op=('*'|'/'|'%') expression                 #mathExpr
-    |expression op=('-'|'+') expression                     #mathExpr
-    |expression op=('&'|'|'|'^') expression                 #mathExpr
-    |expression op=('=='|'!='|'<'|'<='|'>'|'>=') expression #binaryExpr
-    |expression op=('&&'|'||') expression                   #binaryEXpr
+    |expression op=('*'|'/'|'%') expression                 #binaryOpExpr
+    |expression op=('-'|'+') expression                     #binaryOpExpr
+    |expression op=('&'|'|'|'^') expression                 #binaryOpExpr
+    |expression op=('<<'|'>>') expression                   #binaryOpExpr
+    |expression op=('=='|'!='|'<'|'<='|'>'|'>=') expression #binaryOpExpr
+    |expression op=('&&'|'||') expression                   #binaryOpExpr
     |<assoc=right> expression '=' expression                #assignExpr
-    |<assoc=right> New canCreate                            #newExpr
     ;
-functionInsList:expression (',' expression)*;
+functionInsList:(expression (',' expression)*)?;
 functionParameterList:type Identifier (',' type Identifier)*;
-canCreate
-:easytype ('['expression']')+ ('['']')*
-|easytype
-|easytype '('')'
+newsentence
+:New easytype ('['']') (('['']')|'['expression']')* #WrongCreate
+|New easytype ('['expression']')+ ('['']')+ (('['expression']')+ ('['']')+)+    #WrongCreate
+|New easytype ('['expression']')+ ('['']')+ ('['expression']')+ #WrongCreate
+|New easytype ('['expression']')+ ('['']')*     #ArrayCreate
+|New easytype '('')'                            #ClassCreate
+|New easytype                                   #EasyCreate
+;
+primary
+:'(' expression ')'         #Expr
+|This                       #ThisExpr
+|Identifier                 #ClassExpr
+|literal                    #ConstExpr
+;
+
+functiontype
+:type           #Basictype
+|Void           #VoidType
 ;
 type
-    :easytype ('['']')+
-    |easytype;
-easytype: Int | String|Bool|Identifier;
-
-primary
-:'(' expression ')'
-|This
-|Identifier
-|literal
+:easytype                       #Onlytype
+|type '['']'             #Arraytype
+;
+easytype
+: Int               #Inttype
+| String            #StringType
+|Bool               #BoolType
+|Identifier         #ClassType
 ;
 
-literal:True|False|DecimalInteger|str|Null;
-str:'"' (ESC|.)*? '"';
-ESC:'\\''\n''\t';
+boolConst:True|False;
+literal
+:boolConst          #BoolCst
+|DecimalInteger     #Intcst
+|Str                #Strcst
+|Null               #Nullcst
+;
+Str:'"' (~["\n\r\\] | '\\' ["nr\\])*? '"';
+//ESC:'\\'|'\n'|'\t'|;
 Identifier:[a-zA-Z] [a-zA-Z0-9_]*;
 DecimalInteger
-:Minus? [1-9] [0-9]*
+:[1-9] [0-9]*
 |'0'
 ;
