@@ -473,7 +473,7 @@ public class SemanticCheck implements ASTVisitor {
         if (node.TmpBack!=null)
         {
             node.TmpBack.accept(this);
-            if (NowFuncType.Is_Void() || !node.TmpBack.ValueType.SameType(NowFuncType))
+            if (NowFuncType.Is_Void() || !node.TmpBack.ValueType.AssignPermit(NowFuncType))
                 throw new SemanticError("Return Type is error",node.pos);
             return;
         }
