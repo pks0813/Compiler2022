@@ -1,4 +1,3 @@
-// Generated from D:/´úÂëÄØ/java/Compiler2022/src/Parse\MX.g4 by ANTLR 4.9.1
 package Parse;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
