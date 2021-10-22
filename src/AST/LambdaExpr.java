@@ -8,16 +8,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class LambdaExpr extends ExprNode{
-    public List<TypeNode> ParaList=new ArrayList<TypeNode>();
-    public List<ExprNode> InsList=new ArrayList<ExprNode>();
+    public List<OneDeclearNode> ParaList;
+    public List<ExprNode> InsList;
     public SuiteStateNode Suite;
-    public LambdaExpr(position _pos,List<TypeNode> _ParaList,List<ExprNode> _InsList,SuiteStateNode _Suite){
+    public LambdaExpr(position _pos,List<OneDeclearNode> _ParaList,List<ExprNode> _InsList,SuiteStateNode _Suite){
         super(_pos);
         ParaList=_ParaList;
         InsList=_InsList;
         Suite=_Suite;
-        if (InsList.size()!=ParaList.size())
-            throw new SemanticError("Lambda Expr have different number of para",_pos);
     }
 
     @Override

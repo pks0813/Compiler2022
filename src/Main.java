@@ -14,12 +14,12 @@ import java.io.InputStream;
 
 public class Main {
     public static void main(String[] args) throws Exception{
-    String name = "test.mx";
-    InputStream input = new FileInputStream(name);
+//    String name = "test.mx";
+//    InputStream input = new FileInputStream(name);
     ProgramNode ASTRoot;
 
     try {
-        MXLexer lexer = new MXLexer(CharStreams.fromStream(input));
+        MXLexer lexer = new MXLexer(CharStreams.fromStream(System.in));
         lexer.removeErrorListeners();
         lexer.addErrorListener(new MXErrorListener());
         MXParser parser = new MXParser(new CommonTokenStream(lexer));

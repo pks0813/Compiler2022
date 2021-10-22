@@ -107,7 +107,7 @@ varDef
 :type Identifier (',' Identifier)* ';'      #manyDef
 |type Identifier '=' expression    ';'      #assignDef
 ;
-lambda:('[''&'']' '(' ')'|'[''&'']''('functionParameterList')'|'[&]')   '-''>' suite '('functionInsList?')' ;
+lambda:('[&]()'|'[&]('functionParameterList')'|'[&]')   '-''>' suite '('functionInsList?')' ;
 expression
     :lambda                                                 #lambdaExpr
     |primary                                                #atomExpr

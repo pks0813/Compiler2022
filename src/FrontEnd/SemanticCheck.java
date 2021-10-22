@@ -24,6 +24,8 @@ public class SemanticCheck implements ASTVisitor {
     Type NowFuncType;
     ClassSymbol NowClass;
     boolean NeedReturn;
+    boolean InLambda;
+    ExprNode LambdaExpr;
     public SemanticCheck(){
         WolrdScope=new GlobalScope();
         GlobalScope EmptyScope=new GlobalScope();
@@ -201,7 +203,28 @@ public class SemanticCheck implements ASTVisitor {
 
     @Override
     public void visit(LambdaExpr node) {
-
+        TmpScope tmp=NowScope;
+        NowScope=new TmpScope(tmp);
+        for (var Iter:node.InsList)
+            Iter.accept(this);
+        for (var Iter:node.ParaList)
+            Iter.accept(this);
+        for (int i=0;i<node.InsList.size();i++)
+        {
+            if (!node.InsList.get(i).ValueType.AssignPermit(new Type(node.ParaList.get(i).TypeIdentify)))
+                throw new SemanticError("Different Type",node.InsList.get(i).pos);
+        }
+        boolean TmpInLambda=InLambda;
+        ExprNode TmpLambdaExpr=LambdaExpr;
+        InLambda=true;
+        LambdaExpr=null;
+        node.Suite.accept(this);
+        if (LambdaExpr==null)
+            throw new SemanticError("Without Type",node.pos);
+        node.ValueType=LambdaExpr.ValueType;
+        node.exprtype=LambdaExpr.exprtype;
+        InLambda=TmpInLambda;
+        LambdaExpr=TmpLambdaExpr;
     }
 
     @Override
@@ -474,6 +497,15 @@ public class SemanticCheck implements ASTVisitor {
 
     @Override
     public void visit(ReturnNode node) {
+        if (InLambda)
+        {
+            if (node.TmpBack==null)
+                throw new SemanticError("In lambda can't return empty",node.pos);
+            node.TmpBack.accept(this);
+            if (node.TmpBack.ValueType.Is_Void() || node.TmpBack.ValueType.Is_Null())
+                throw new SemanticError("Can't return this",node.pos);
+            LambdaExpr=node.TmpBack;
+        }
         NeedReturn=false;
         if (node.TmpBack!=null)
         {
