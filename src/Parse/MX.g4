@@ -107,11 +107,11 @@ varDef
 :type Identifier (',' Identifier)* ';'      #manyDef
 |type Identifier '=' expression    ';'      #assignDef
 ;
-//lambda:'[&]'('(' functionParameterList? ')')? '->' suite '('functionInsList?')' ;
+lambda:('[''&'']' '(' ')'|'[''&'']''('functionParameterList')'|'[&]')   '-''>' suite '('functionInsList?')' ;
 expression
-    :primary                                                #atomExpr
+    :lambda                                                 #lambdaExpr
+    |primary                                                #atomExpr
     |<assoc=right> newsentence                              #newExpr
-//    |lambda                                                 #lambdaExpr
     |expression '.' Identifier                              #pointExpr
     |expression '(' functionInsList ')'                     #functionExpr
     |expression '[' expression ']'                          #subscriptExpr

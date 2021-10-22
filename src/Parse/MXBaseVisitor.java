@@ -1,4 +1,4 @@
-
+// Generated from D:/´úÂëÄØ/java/Compiler2022/src/Parse\MX.g4 by ANTLR 4.9.1
 package Parse;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
@@ -157,6 +157,13 @@ public class MXBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements MXV
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitLambda(MXParser.LambdaContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitNewExpr(MXParser.NewExprContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
@@ -172,6 +179,13 @@ public class MXBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements MXV
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitSubscriptExpr(MXParser.SubscriptExprContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitLambdaExpr(MXParser.LambdaExprContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

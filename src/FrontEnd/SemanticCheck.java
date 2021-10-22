@@ -200,6 +200,11 @@ public class SemanticCheck implements ASTVisitor {
     }
 
     @Override
+    public void visit(LambdaExpr node) {
+
+    }
+
+    @Override
     public void visit(NewExprNode node) {
         ClassSymbol IdentifyClass=NowScope.FindClass(node.Identify,node.pos);
         for (int i=0;i<node.DefineDim;i++)
