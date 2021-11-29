@@ -1,3 +1,4 @@
+// Generated from D:/´úÂëÄØ/java/Compiler2022/src/Parse\MX.g4 by ANTLR 4.9.1
 package Parse;
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
@@ -237,16 +238,6 @@ public interface MXListener extends ParseTreeListener {
 	 */
 	void exitAssignDef(MXParser.AssignDefContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link MXParser#lambda}.
-	 * @param ctx the parse tree
-	 */
-	void enterLambda(MXParser.LambdaContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link MXParser#lambda}.
-	 * @param ctx the parse tree
-	 */
-	void exitLambda(MXParser.LambdaContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code newExpr}
 	 * labeled alternative in {@link MXParser#expression}.
 	 * @param ctx the parse tree
@@ -282,18 +273,6 @@ public interface MXListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSubscriptExpr(MXParser.SubscriptExprContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code lambdaExpr}
-	 * labeled alternative in {@link MXParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterLambdaExpr(MXParser.LambdaExprContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code lambdaExpr}
-	 * labeled alternative in {@link MXParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitLambdaExpr(MXParser.LambdaExprContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code atomExpr}
 	 * labeled alternative in {@link MXParser#expression}.

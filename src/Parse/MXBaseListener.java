@@ -1,3 +1,4 @@
+// Generated from D:/´úÂëÄØ/java/Compiler2022/src/Parse\MX.g4 by ANTLR 4.9.1
 package Parse;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -255,18 +256,6 @@ public class MXBaseListener implements MXListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterLambda(MXParser.LambdaContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLambda(MXParser.LambdaContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterNewExpr(MXParser.NewExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -298,18 +287,6 @@ public class MXBaseListener implements MXListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSubscriptExpr(MXParser.SubscriptExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterLambdaExpr(MXParser.LambdaExprContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitLambdaExpr(MXParser.LambdaExprContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

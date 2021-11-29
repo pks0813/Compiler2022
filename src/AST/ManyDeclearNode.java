@@ -11,11 +11,11 @@ public class ManyDeclearNode extends VardeclearNode{
         super(_pos);
         List=_List;
     }
-    public ManyDeclearNode(OneDeclearNode OneDecl){
-        super(OneDecl.pos);
-        List=new ArrayList<>();
-        List.add(OneDecl);
-    }
+//    public ManyDeclearNode(OneDeclearNode OneDecl){
+//        super(OneDecl.pos);
+//        List=new ArrayList<>();
+//        List.add(OneDecl);
+//    }
 
     @Override
     public void accept(ASTVisitor visitor) {

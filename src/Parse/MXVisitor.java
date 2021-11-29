@@ -1,3 +1,4 @@
+// Generated from D:/´úÂëÄØ/java/Compiler2022/src/Parse\MX.g4 by ANTLR 4.9.1
 package Parse;
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;
 
@@ -145,12 +146,6 @@ public interface MXVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAssignDef(MXParser.AssignDefContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link MXParser#lambda}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLambda(MXParser.LambdaContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code newExpr}
 	 * labeled alternative in {@link MXParser#expression}.
 	 * @param ctx the parse tree
@@ -171,13 +166,6 @@ public interface MXVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitSubscriptExpr(MXParser.SubscriptExprContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code lambdaExpr}
-	 * labeled alternative in {@link MXParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitLambdaExpr(MXParser.LambdaExprContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code atomExpr}
 	 * labeled alternative in {@link MXParser#expression}.

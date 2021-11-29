@@ -1,15 +1,15 @@
-/*
-Test Package: Sema_Local_Preview
-Test Target: Expression
-Author: 11' Tianxing Jin
-Time: 2019-10-20
-Verdict: Success
-Origin Package: Semantic Extended
-*/
-int A = 1;
-int B = 1;
-int C = 1;
-
+int a=5;
 int main(){
-	return [&]()->{return "1";}();
+
+    int b,c;
+    if (a==6)
+    {
+        b=1;
+        if (b==1)
+           c=1;
+          else
+          c=2;
+    }
+    else b=2;
+    return 0;
 }

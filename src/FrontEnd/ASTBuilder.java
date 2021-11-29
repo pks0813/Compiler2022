@@ -7,9 +7,7 @@ import Util.error.ErrorPlus;
 import Util.error.SemanticError;
 import Util.error.syntaxError;
 import Util.position.position;
-import org.antlr.v4.runtime.tree.ParseTree;
 
-import javax.swing.plaf.nimbus.State;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -274,28 +272,28 @@ public class ASTBuilder extends MXBaseVisitor<ASTNode> {
         return new BasicDeclearFunctionNode(new position(ctx.getStart()),(SuiteStateNode) visit(ctx.suite()),null,ctx.Identifier().getText(),null,true);
     }
 
-    @Override
-    public ASTNode visitLambda(MXParser.LambdaContext ctx) {
-        List<OneDeclearNode> List=new ArrayList<OneDeclearNode>();
-        List<ExprNode> ExprList=new ArrayList<ExprNode>();
-        int Num1=0,Num2=0;
-        if (ctx.functionParameterList()!=null)
-        {
-            Num1=ctx.functionParameterList().Identifier().size();
-            for (int i=0;i<Num1;i++)
-                List.add(new OneDeclearNode(new position(ctx.functionParameterList().type(i).getStart()),
-                        (TypeNode) visit(ctx.functionParameterList().type(i)),
-                        ctx.functionParameterList().Identifier(i).getText()));
-        }
-        if (ctx.functionInsList()!=null)
-        {
-            Num2=ctx.functionInsList().expression().size();
-            for (int i=0;i<Num2;i++)
-                ExprList.add((ExprNode) visit(ctx.functionInsList().expression(i)));
-        }
-        if (Num1!=Num2) throw new SemanticError("Different number of Lambda",new position(ctx.getStart()));
-        return new LambdaExpr(new position(ctx.getStart()),List,ExprList,(SuiteStateNode) visit(ctx.suite()));
-    }
+//    @Override
+//    public ASTNode visitLambda(MXParser.LambdaContext ctx) {
+//        List<OneDeclearNode> List=new ArrayList<OneDeclearNode>();
+//        List<ExprNode> ExprList=new ArrayList<ExprNode>();
+//        int Num1=0,Num2=0;
+//        if (ctx.functionParameterList()!=null)
+//        {
+//            Num1=ctx.functionParameterList().Identifier().size();
+//            for (int i=0;i<Num1;i++)
+//                List.add(new OneDeclearNode(new position(ctx.functionParameterList().type(i).getStart()),
+//                        (TypeNode) visit(ctx.functionParameterList().type(i)),
+//                        ctx.functionParameterList().Identifier(i).getText()));
+//        }
+//        if (ctx.functionInsList()!=null)
+//        {
+//            Num2=ctx.functionInsList().expression().size();
+//            for (int i=0;i<Num2;i++)
+//                ExprList.add((ExprNode) visit(ctx.functionInsList().expression(i)));
+//        }
+//        if (Num1!=Num2) throw new SemanticError("Different number of Lambda",new position(ctx.getStart()));
+//        return new LambdaExpr(new position(ctx.getStart()),List,ExprList,(SuiteStateNode) visit(ctx.suite()));
+//    }
 
     @Override
     public ASTNode visitFunctionDef(MXParser.FunctionDefContext ctx) {

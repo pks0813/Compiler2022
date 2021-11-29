@@ -18,7 +18,7 @@ import javax.lang.model.type.NullType;
 import java.util.List;
 
 public class SemanticCheck implements ASTVisitor {
-    GlobalScope WolrdScope;
+    public GlobalScope WolrdScope;
     TmpScope NowScope;
     int Loopcnt;
     Type NowFuncType;
