@@ -1,10 +1,6 @@
 #include<stdio.h>
-int a;
+#include<stdbool.h>
 int main(){
-    a=5;
-    int b;
-    if (a==6)
-        b=1;
-    else b=2;
-    printf("%d\n",a);
+    int x[10][20];
+    x[1][2]=3;
 }

@@ -10,9 +10,11 @@ public class IRFunc {
     public String Name;
     //    public ArrayList<BasicInst> FuncAlloc;
     public ArrayList<InstBlock> FuncBlock;
+    public ArrayList<AllType> ParaList;
     public IRFunc(AllType _ReturnType,String _Name){
         ReturnType=_ReturnType;
         Name=_Name;
         FuncBlock=new ArrayList<>();
+        ParaList=new ArrayList<>();
     }
 }

@@ -4,7 +4,6 @@ import AST.*;
 import Parse.MXBaseVisitor;
 import Parse.MXParser;
 import Util.error.ErrorPlus;
-import Util.error.SemanticError;
 import Util.error.syntaxError;
 import Util.position.position;
 
@@ -34,7 +33,7 @@ public class ASTBuilder extends MXBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitStrcst(MXParser.StrcstContext ctx) {
-        return new StringConstNode(new position(ctx.getStart()),ctx.getText());
+        return new StringConstNode(new position(ctx.getStart()),ctx.getText().substring(1,ctx.getText().length()-1));
     }
 
     @Override
@@ -204,7 +203,7 @@ public class ASTBuilder extends MXBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitBackfixExpr(MXParser.BackfixExprContext ctx) {
-        if (ctx.op.equals("++"))
+        if (ctx.op.getText().equals("++"))
             return new BackOpExpr(new position(ctx.getStart()),BackOpExpr.OP.Plus2,(ExprNode) visit(ctx.expression()));
         else
             return new BackOpExpr(new position(ctx.getStart()),BackOpExpr.OP.Minus2,(ExprNode) visit(ctx.expression()));

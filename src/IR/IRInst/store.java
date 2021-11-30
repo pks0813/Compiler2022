@@ -11,7 +11,7 @@ public class store extends BasicInst{
         StoreValue=_StoreValue;
     }
     @Override public String toString(){
-        return "store " + StoreValue.type + " " + StoreValue + ", " + StorePointer.type + " " + StorePointer.toString();
+        return "store " + StoreValue.type + " " + StoreValue + ", " + StorePointer.type + " " + StorePointer;
     }
 
 }

@@ -2,7 +2,7 @@ package IR.IRInst;
 
 import IR.IRValue.IRValue;
 
-public class ret extends BasicInst{
+public class ret extends JumpInst{
     public IRValue value;//void =null
     public ret(IRValue _value){
         super();

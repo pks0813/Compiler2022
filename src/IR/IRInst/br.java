@@ -3,7 +3,7 @@ package IR.IRInst;
 import IR.IRValue.IRValue;
 import IR.InstBlock;
 
-public class br extends BasicInst{
+public class br extends JumpInst{
     public IRValue Cond;
     public String IfTrue,IfElse;
     public br(String _IfTrue){//jump

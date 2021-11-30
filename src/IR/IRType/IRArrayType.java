@@ -1,15 +1,15 @@
 package IR.IRType;
 
 public class IRArrayType extends IRHardType{
-    public int dim;
+    public int cnt;
     public AllType type;
-    public IRArrayType(int _dim,AllType _type){
+    public IRArrayType(int _cnt,AllType _type){
         super();
-        dim=_dim;
+        cnt=_cnt;
         type=_type;
     }
     @Override
     public String toString(){
-        return "[ "+dim+" x "+type+" ]";
+        return "[ "+cnt+" x "+type+" ]";
     }
 }
