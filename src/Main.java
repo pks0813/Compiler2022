@@ -1,5 +1,6 @@
 
 import AST.ProgramNode;
+import Codegen.CGBuilder;
 import FrontEnd.ASTBuilder;
 import FrontEnd.SemanticCheck;
 import IR.IRBuilder;
@@ -18,10 +19,13 @@ import java.io.OutputStream;
 
 public class Main {
     public static void main(String[] args) throws Exception{
-    String namein = "test.mx";
+    String namein = "test.c";
     InputStream input = new FileInputStream(namein);
     String namell= "test.ll";
     OutputStream llOutput=new FileOutputStream(namell);
+    String names= "testcolor.s";
+    OutputStream sOutput=new FileOutputStream(names);
+
     ProgramNode ASTRoot;
 
     try {
@@ -39,6 +43,8 @@ public class Main {
         IRBuilder IRbuilder=new IRBuilder(SemanticAns.WolrdScope);
         IRbuilder.visit(ASTRoot);
         new IRPrint(IRbuilder,llOutput);
+        CGBuilder CGbuilder=new CGBuilder(IRbuilder);
+        CGbuilder.CGPrint(sOutput);
     } catch (error er) {
         System.err.println(er.tostring());
         throw new RuntimeException();

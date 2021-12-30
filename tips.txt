@@ -1,3 +1,6 @@
 clang -emit-llvm -S 1.c -o 1.ll		c转换成ll
 llvm-as 1.ll -o 1.bc			ll转换成bc 
 lli 1.bc				bc可以直接运行
+
+clang -emit-llvm -S 1.c -o 1.ll --target=riscv32
+llc 1.ll -o main.s --march=riscv32

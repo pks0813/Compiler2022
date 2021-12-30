@@ -1,9 +1,0 @@
-int x=10;
-
-int main() {
-    int y=-x;
-    int z=~x;
-    printlnInt(y);
-    printlnInt(z);
-    return 0;
-}

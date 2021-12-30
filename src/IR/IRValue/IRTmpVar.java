@@ -8,6 +8,10 @@ public class IRTmpVar extends IRValue{
         super(_type);
         Name=_Name;
     }
+    public IRTmpVar(AllType _type,int _Name){
+        super(_type);
+        Name=String.valueOf(_Name);
+    }
     @Override
     public String toString(){return "%"+Name;}
 }

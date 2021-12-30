@@ -232,25 +232,37 @@ public class MXBaseListener implements MXListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterManyDef(MXParser.ManyDefContext ctx) { }
+	@Override public void enterClassvarDef(MXParser.ClassvarDefContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitManyDef(MXParser.ManyDefContext ctx) { }
+	@Override public void exitClassvarDef(MXParser.ClassvarDefContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterAssignDef(MXParser.AssignDefContext ctx) { }
+	@Override public void enterBasicvarDef(MXParser.BasicvarDefContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitAssignDef(MXParser.AssignDefContext ctx) { }
+	@Override public void exitBasicvarDef(MXParser.BasicvarDefContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVarDef(MXParser.VarDefContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVarDef(MXParser.VarDefContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

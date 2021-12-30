@@ -1,0 +1,61 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{ctex}
+\title{New a Array}
+\author{潘开森 520030910140}
+\date{Dec 5 2021}
+\begin{document}
+
+\maketitle
+\begin{verbatim} 
+    new int [10][20][30]:
+
+    newExpr0.dep0.Initial
+    (i32)   %0=mul List[0] i32 TypeSize 
+    (i32)   %1=add %0 39(32 向上取整)
+    (i32)   %2=div %1 8
+    (i8*)   %3=molloc %2
+    (i32*)  %4=bitcast %3 to i32*
+            store List[0] %4
+
+    if Dim=1 finish
+    (i32*)  %5=getelement i32 i32* %4  i32 1
+    (Type*) %6=bitcast %5 to Type*
+    (Type**)%7=alloca Type*
+            store Type** %7 Type %6
+    (i32*)  %8=alloca i32
+            store i32* %8 i32 0
+            br newExpr0.dep0.Loop
+    
+    newExpr0.dep0.Loop
+        %9=Load Type** %7 
+        %10=Load i32* %8
+        %11=add i32 %10 i32 1
+        store i32* %8 i32 %11
+        %12=icmp ne i32 %10 i32 List[0]
+        %13 = getelement Type Type* %9 i32 1
+        store Type** %7 Type* %13
+        br %12 %label newExpr0.dep1.Initial %label newExpr0.dep0.finish
+    
+        
+    newExpr0.dep0.Finish
+    %14 =bitcast i8* %3 to Type* 
+    store (Last)Type**%9  Type* %14
+    
+    Finish Or BrLast newExpr0.dep-1.Finish
+
+
+    int* x ;
+    x[10];
+    
+    (i32*)      %0 = bitcast x to i32*
+    (i32*)      %1 = getelement i32 i32* %0  i32 1
+    (Type*)     %2 = bitcast %1 to Type* 
+    (Type*)     %3 = getelement Type Type* %2  i32 ID(Pointer)
+    (Type)      %4 = load type* %3(value)
+    
+    
+    
+\end{verbatim}
+
+\end{document}

@@ -1,5 +1,6 @@
 package IR.IRInst;
 
+import IR.IRValue.IRNullConst;
 import IR.IRValue.IRValue;
 
 public class icmp extends BasicInst{
@@ -19,6 +20,8 @@ public class icmp extends BasicInst{
         Op=_Op;
     }
     @Override public String toString(){
-        return LoadTo.toString() + " = icmp " + Op.toString() + " " + Left.type.toString() + " " + Left.toString() + ", " + Right.toString();
+        if (Left instanceof IRNullConst)
+            return LoadTo.toString() + " = icmp " + Op.toString() + " " + Right.type.toString() + " " + Left.toString() + ", " + Right.toString();
+        else return LoadTo.toString() + " = icmp " + Op.toString() + " " + Left.type.toString() + " " + Left.toString() + ", " + Right.toString();
     }
 }

@@ -1,5 +1,8 @@
 package IR.IRType;
 
+import Util.error.syntaxError;
+import Util.position.position;
+
 public class IRArrayType extends IRHardType{
     public int cnt;
     public AllType type;
@@ -12,4 +15,11 @@ public class IRArrayType extends IRHardType{
     public String toString(){
         return "[ "+cnt+" x "+type+" ]";
     }
+
+    @Override
+    public int Size() {
+        System.out.println("ArrayType size error");
+        return 0;
+    }
+
 }

@@ -110,7 +110,7 @@ public class ASTBuilder extends MXBaseVisitor<ASTNode> {
     public ASTNode visitArrayCreate(MXParser.ArrayCreateContext ctx) {
         int DefineDim=ctx.expression().size();
         int Dim=ctx.RightSquareBracket().size();
-        List<ExprNode> SizeList=new ArrayList<ExprNode>();
+        ArrayList<ExprNode> SizeList=new ArrayList<ExprNode>();
         for (int i=0;i<DefineDim;i++)
             SizeList.add((ExprNode) visit(ctx.expression(i)));
             return new NewExprNode(new position(ctx.getStart()),ctx.easytype().getText(),DefineDim,SizeList,Dim);
@@ -239,27 +239,52 @@ public class ASTBuilder extends MXBaseVisitor<ASTNode> {
         return (ExprNode)visit(ctx.primary());
     }
 
-    @Override
-    public ASTNode visitAssignDef(MXParser.AssignDefContext ctx) {
-        return new AssignDeclearNode(new position(ctx.getStart()),
-                new OneDeclearNode(new position(ctx.type().getStart()),(TypeNode) visit(ctx.type()),ctx.Identifier().toString()),
-                        (ExprNode)visit(ctx.expression()));
-    }
+//    @Override
+//    public ASTNode visitAssignDef(MXParser.AssignDefContext ctx) {
+//        return new AssignDeclearNode(new position(ctx.getStart()),
+//                new OneDeclearNode(new position(ctx.type().getStart()),(TypeNode) visit(ctx.type()),ctx.Identifier().toString()),
+//                        (ExprNode)visit(ctx.expression()));
+//    }
+
+//    @Override
+//    public ASTNode visitManyDef(MXParser.ManyDefContext ctx) {
+//        List<OneDeclearNode> List=new ArrayList<OneDeclearNode>();
+//        int Num=ctx.Identifier().size();
+//        for (int i=0;i<Num;i++)
+//        {
+//            List.add(new OneDeclearNode(new position(ctx.getStart()),(TypeNode) visit(ctx.type()),ctx.Identifier(i).getText()));
+//        }
+//        return new ManyDeclearNode(new position(ctx.getStart()),List);
+//    }
+
 
     @Override
-    public ASTNode visitManyDef(MXParser.ManyDefContext ctx) {
-        List<OneDeclearNode> List=new ArrayList<OneDeclearNode>();
-        int Num=ctx.Identifier().size();
+    public ASTNode visitVarDef(MXParser.VarDefContext ctx) {
+        List<OneDeclearNode> List=new ArrayList<>();
+        int Num=ctx.basicvarDef().size();
         for (int i=0;i<Num;i++)
         {
-            List.add(new OneDeclearNode(new position(ctx.getStart()),(TypeNode) visit(ctx.type()),ctx.Identifier(i).getText()));
+            if (ctx.basicvarDef(i).expression()==null)
+                List.add(new OneDeclearNode(new position(ctx.getStart()),(TypeNode) visit(ctx.type()),ctx.basicvarDef(i).Identifier().getText(),null));
+            else
+                List.add(new OneDeclearNode(new position(ctx.getStart()),(TypeNode) visit(ctx.type()),ctx.basicvarDef(i).Identifier().getText(),(ExprNode) visit(ctx.basicvarDef(i).expression())));
         }
         return new ManyDeclearNode(new position(ctx.getStart()),List);
     }
 
     @Override
+    public ASTNode visitClassvarDef(MXParser.ClassvarDefContext ctx) {
+
+        List<OneDeclearNode> List=new ArrayList<>();
+        int Num=ctx.Identifier().size();
+        for (int i=0;i<Num;i++)
+           List.add(new OneDeclearNode(new position(ctx.getStart()),(TypeNode) visit(ctx.type()),ctx.Identifier(i).getText(),null));
+        return new ManyDeclearNode(new position(ctx.getStart()),List);
+    }
+
+    @Override
     public ASTNode visitSuite(MXParser.SuiteContext ctx) {
-        List<StatementNode> List=new ArrayList<StatementNode>();
+        List<StatementNode> List=new ArrayList<>();
         int Num=ctx.statement().size();
         for (int i=0;i<Num;i++)
             List.add((StatementNode) visit(ctx.statement(i)));
@@ -268,7 +293,7 @@ public class ASTBuilder extends MXBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitConstructDef(MXParser.ConstructDefContext ctx) {
-        return new BasicDeclearFunctionNode(new position(ctx.getStart()),(SuiteStateNode) visit(ctx.suite()),null,ctx.Identifier().getText(),null,true);
+        return new BasicDeclearFunctionNode(new position(ctx.getStart()),(SuiteStateNode) visit(ctx.suite()),new VoidTypeNode(new position(0,0)),ctx.Identifier().getText(),new ManyDeclearNode(new position(0,0),new ArrayList<>()),true);
     }
 
 //    @Override
@@ -298,14 +323,14 @@ public class ASTBuilder extends MXBaseVisitor<ASTNode> {
     public ASTNode visitFunctionDef(MXParser.FunctionDefContext ctx) {
 //        if (ctx.functiontype().getText().equals("int") && ctx.Identifier().getText().equals("main"))
 //            return new MainFunctionDeclearNode(new position(ctx.getStart()),(SuiteStateNode) visit(ctx.suite()));
-        List<OneDeclearNode> List=new ArrayList<OneDeclearNode>();
+        List<OneDeclearNode> List=new ArrayList<>();
         if (ctx.functionParameterList()!=null)
         {
             int Num=ctx.functionParameterList().Identifier().size();
             for (int i=0;i<Num;i++)
                 List.add(new OneDeclearNode(new position(ctx.functionParameterList().type(i).getStart()),
                                             (TypeNode) visit(ctx.functionParameterList().type(i)),
-                                            ctx.functionParameterList().Identifier(i).getText()));
+                                            ctx.functionParameterList().Identifier(i).getText(),null));
         }
         return new BasicDeclearFunctionNode(new position(ctx.getStart()),(SuiteStateNode) visit(ctx.suite()),(TypeNode) visit(ctx.functiontype()),ctx.Identifier().getText(),
                 new ManyDeclearNode(new position(ctx.getStart()),List),false);
@@ -319,16 +344,12 @@ public class ASTBuilder extends MXBaseVisitor<ASTNode> {
 //    public ASTNode visitClassConstructDef(MXParser.ClassConstructDefContext ctx) {
 //        return visit(ctx.constructDef());
 //    }
-//
-//    @Override
-//    public ASTNode visitClassVarDef(MXParser.ClassVarDefContext ctx) {
-//        return visit(ctx.varDef());
-//    }
+
 
     @Override
     public ASTNode visitClassDef(MXParser.ClassDefContext ctx) {
-        List<BasicDeclearFunctionNode> FuncList=new ArrayList<BasicDeclearFunctionNode>();
-        List<VardeclearNode> VarList=new ArrayList<VardeclearNode>();
+        List<BasicDeclearFunctionNode> FuncList=new ArrayList<>();
+        List<ManyDeclearNode> VarList=new ArrayList<>();
         if (ctx.functionDef()!=null)
         {
             int NumFunc=ctx.functionDef().size();
@@ -341,10 +362,10 @@ public class ASTBuilder extends MXBaseVisitor<ASTNode> {
             for (int i=0;i<NumConstruct;i++)
                 FuncList.add((BasicDeclearFunctionNode) visit(ctx.constructDef(i)));
         }
-        if (ctx.varDef()!=null) {
-            int NumVar = ctx.varDef().size();
+        if (ctx.classvarDef()!=null) {
+            int NumVar = ctx.classvarDef().size();
             for (int i = 0; i < NumVar; i++)
-                VarList.add((VardeclearNode) visit(ctx.varDef(i)));
+                VarList.add((ManyDeclearNode) visit(ctx.classvarDef(i)));
         }
         return new ClassDeclearNode(new position(ctx.getStart()),ctx.Identifier().getText(),FuncList,VarList);
     }
@@ -423,7 +444,7 @@ public class ASTBuilder extends MXBaseVisitor<ASTNode> {
             {
                 List.add(new OneDeclearNode(new position(ctx.functionDef().functionParameterList().type(i).getStart()),
                                             (TypeNode) visit(ctx.functionDef().functionParameterList().type(i)),
-                                            ctx.functionDef().functionParameterList().Identifier(i).getText()));
+                                            ctx.functionDef().functionParameterList().Identifier(i).getText(),null));
             }
         }
         return new BasicDeclearFunctionNode(new position(ctx.getStart()),(SuiteStateNode) visit(ctx.functionDef().suite()),(TypeNode) visit(ctx.functionDef().functiontype()),

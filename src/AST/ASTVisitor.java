@@ -1,7 +1,7 @@
 package AST;
 
 public interface ASTVisitor {
-    void visit(AssignDeclearNode node);
+//    void visit(AssignDeclearNode node);
     void visit(AssignNode node);
     void visit(BackOpExpr node);
     void visit(BasicDeclearFunctionNode node);

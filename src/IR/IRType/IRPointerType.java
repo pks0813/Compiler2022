@@ -10,4 +10,10 @@ public class IRPointerType extends SimpleType{
     public String toString() {
         return PointedType.toString() + "*";
     }
+
+    @Override
+    public int Size() {
+        return 64;
+    }
+
 }

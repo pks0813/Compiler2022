@@ -6,4 +6,10 @@ public class voidType extends AllType{
     public String toString() {
         return "void";
     }
+
+    @Override
+    public int Size() {
+        System.out.println("VoidType Size error");
+        return 0;
+    }
 }

@@ -236,7 +236,7 @@ public class SemanticCheck implements ASTVisitor {
             if (!node.SizeExprList.get(i).ValueType.Is_Int())
                 throw new SemanticError("The size is not a Int",node.pos);
         }
-        node.exprtype=ExprNode.ExprType.LeftValue;
+        node.exprtype=ExprNode.ExprType.RightValue;
         node.ValueType=new Type(node.Identify,node.Dim);
     }
 
@@ -289,6 +289,8 @@ public class SemanticCheck implements ASTVisitor {
     @Override
     public void visit(OneDeclearNode node) {
         node.TypeIdentify.accept(this);
+        if (node.Expr!=null)
+            node.Expr.accept(this);
         if (node.TypeIdentify instanceof TypeArrayNode)
         {
             NowScope.FindClass(node.TypeIdentify.TypeIdentify,node.pos);
@@ -302,14 +304,14 @@ public class SemanticCheck implements ASTVisitor {
         return;
     }
 
-    @Override
-    public void visit(AssignDeclearNode node) {
-        node.Expr.accept(this);
-        node.Decl.accept(this);
-        VarSymbol NowVar=NowScope.FindVar(node.Decl.Identify,node.Decl.pos);
-        if (!NowVar.Vartype.AssignPermit(node.Expr.ValueType))
-            throw new SemanticError("Different Type",node.pos);
-    }
+//    @Override
+//    public void visit(AssignDeclearNode node) {
+//        node.Expr.accept(this);
+//        node.Decl.accept(this);
+//        VarSymbol NowVar=NowScope.FindVar(node.Decl.Identify,node.Decl.pos);
+//        if (!NowVar.Vartype.AssignPermit(node.Expr.ValueType))
+//            throw new SemanticError("Different Type",node.pos);
+//    }
 
     @Override
     public void visit(BreakNode node) {
@@ -360,12 +362,11 @@ public class SemanticCheck implements ASTVisitor {
     void UpdateClassScope(ClassDeclearNode node, Scope BaseScope)
     {
         for (var Iter:node.VarList){
-            if (Iter instanceof AssignDeclearNode)
-                throw new SemanticError("Class Can't Use assign Declear",Iter.pos);
-            if (Iter instanceof OneDeclearNode)
-                BaseScope.AddVar(new VarSymbol(((OneDeclearNode) Iter).Identify,Iter,new Type(((OneDeclearNode) Iter).TypeIdentify)));
-            if (Iter instanceof ManyDeclearNode)
-                for (var OneDcl:((ManyDeclearNode) Iter).List)
+//            if (Iter instanceof AssignDeclearNode)
+//                throw new SemanticError("Class Can't Use assign Declear",Iter.pos);
+//            if (Iter instanceof OneDeclearNode)
+//                BaseScope.AddVar(new VarSymbol(((OneDeclearNode) Iter).Identify,Iter,new Type(((OneDeclearNode) Iter).TypeIdentify)));
+                for (var OneDcl:Iter.List)
                     BaseScope.AddVar(new VarSymbol(OneDcl.Identify,OneDcl,new Type(OneDcl.TypeIdentify)));
         }
         for (var Iter:node.FuncList){

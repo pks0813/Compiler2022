@@ -11,7 +11,7 @@ public class StringDec extends BasicInst{
     }
     @Override
     public String toString() {
-        return "@"+Name+" = constant ["+(Val.length()+1)+" x i8] c\""+Change(Val)+"\"";
+        return "@"+Name+" = constant ["+(Val.length())+" x i8] c\""+Change(Val)+"\"";
     }
     String Change(String x){
         String rs=new String(x);

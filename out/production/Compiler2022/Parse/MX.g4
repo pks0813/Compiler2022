@@ -95,7 +95,7 @@ statement
     |expression ';'                                                                         #exprssionStat
     |';'                                                                                    #emptyStat
     ;
-classDef:Class Identifier '{' (varDef|functionDef|constructDef )* '}' ';';
+classDef:Class Identifier '{' (classvarDef|functionDef|constructDef )* '}' ';';
 //classState
 //:varDef             #ClassVarDef
 //|functionDef        #ClassFuncDef
@@ -103,9 +103,10 @@ classDef:Class Identifier '{' (varDef|functionDef|constructDef )* '}' ';';
 //;
 functionDef:functiontype Identifier '(' functionParameterList? ')' suite;
 constructDef:Identifier '('  ')' suite;
+classvarDef:type Identifier (',' Identifier)* ';';
+basicvarDef:Identifier ('=' expression)? ;
 varDef
-:type Identifier (',' Identifier)* ';'      #manyDef
-|type Identifier '=' expression    ';'      #assignDef
+:type basicvarDef (',' basicvarDef )* ';'
 ;
 //lambda:('[&]()'|'[&]('functionParameterList')'|'[&]')   '-''>' suite '('functionInsList?')' ;
 expression
@@ -131,10 +132,10 @@ expression
 functionInsList:(expression (',' expression)*)?;
 functionParameterList:type Identifier (',' type Identifier)*;
 newsentence
-:New easytype ('['']') (('['']')|'['expression']')* #WrongCreate
-|New easytype ('['expression']')+ ('['']')+ (('['expression']')+ ('['']')+)+    #WrongCreate
-|New easytype ('['expression']')+ ('['']')+ ('['expression']')+ #WrongCreate
-|New easytype ('['expression']')+ ('['']')*     #ArrayCreate
+//:New easytype ('['']') (('['']')|'['expression']')* #WrongCreate
+//|New easytype ('['expression']')+ ('['']')+ (('['expression']')+ ('['']')+)+    #WrongCreate
+//|New easytype ('['expression']')+ ('['']')+ ('['expression']')+ #WrongCreate
+:New easytype ('['expression']')+ ('['']')*     #ArrayCreate
 |New easytype '('')'                            #ClassCreate
 |New easytype                                   #EasyCreate
 ;

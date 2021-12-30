@@ -1,5 +1,7 @@
 package IR.IRInst;
 
+import IR.IRType.IRPointerType;
+import IR.IRValue.IRNullConst;
 import IR.IRValue.IRValue;
 
 public class store extends BasicInst{
@@ -11,6 +13,8 @@ public class store extends BasicInst{
         StoreValue=_StoreValue;
     }
     @Override public String toString(){
+        if (StoreValue instanceof IRNullConst)
+            return "store " + ((IRPointerType)(StorePointer.type)).PointedType + " null , " + StorePointer.type + " " + StorePointer;
         return "store " + StoreValue.type + " " + StoreValue + ", " + StorePointer.type + " " + StorePointer;
     }
 

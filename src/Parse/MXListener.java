@@ -214,29 +214,35 @@ public interface MXListener extends ParseTreeListener {
 	 */
 	void exitConstructDef(MXParser.ConstructDefContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code manyDef}
-	 * labeled alternative in {@link MXParser#varDef}.
+	 * Enter a parse tree produced by {@link MXParser#classvarDef}.
 	 * @param ctx the parse tree
 	 */
-	void enterManyDef(MXParser.ManyDefContext ctx);
+	void enterClassvarDef(MXParser.ClassvarDefContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code manyDef}
-	 * labeled alternative in {@link MXParser#varDef}.
+	 * Exit a parse tree produced by {@link MXParser#classvarDef}.
 	 * @param ctx the parse tree
 	 */
-	void exitManyDef(MXParser.ManyDefContext ctx);
+	void exitClassvarDef(MXParser.ClassvarDefContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code assignDef}
-	 * labeled alternative in {@link MXParser#varDef}.
+	 * Enter a parse tree produced by {@link MXParser#basicvarDef}.
 	 * @param ctx the parse tree
 	 */
-	void enterAssignDef(MXParser.AssignDefContext ctx);
+	void enterBasicvarDef(MXParser.BasicvarDefContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code assignDef}
-	 * labeled alternative in {@link MXParser#varDef}.
+	 * Exit a parse tree produced by {@link MXParser#basicvarDef}.
 	 * @param ctx the parse tree
 	 */
-	void exitAssignDef(MXParser.AssignDefContext ctx);
+	void exitBasicvarDef(MXParser.BasicvarDefContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link MXParser#varDef}.
+	 * @param ctx the parse tree
+	 */
+	void enterVarDef(MXParser.VarDefContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link MXParser#varDef}.
+	 * @param ctx the parse tree
+	 */
+	void exitVarDef(MXParser.VarDefContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code newExpr}
 	 * labeled alternative in {@link MXParser#expression}.

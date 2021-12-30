@@ -132,19 +132,23 @@ public interface MXVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitConstructDef(MXParser.ConstructDefContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code manyDef}
-	 * labeled alternative in {@link MXParser#varDef}.
+	 * Visit a parse tree produced by {@link MXParser#classvarDef}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitManyDef(MXParser.ManyDefContext ctx);
+	T visitClassvarDef(MXParser.ClassvarDefContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code assignDef}
-	 * labeled alternative in {@link MXParser#varDef}.
+	 * Visit a parse tree produced by {@link MXParser#basicvarDef}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitAssignDef(MXParser.AssignDefContext ctx);
+	T visitBasicvarDef(MXParser.BasicvarDefContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link MXParser#varDef}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitVarDef(MXParser.VarDefContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code newExpr}
 	 * labeled alternative in {@link MXParser#expression}.
