@@ -471,8 +471,10 @@ public class IRBuilder implements ASTVisitor {
                 node.Value = TmpValue;
 
             } else {
+                IRValue ThisValue = new IRTmpVar(new IRPointerType(new IRClassType(NowClass.Identify)), String.valueOf(getID()));
+                NowBlock.pushback(new load(ThisValue,new IRTmpVar(new IRPointerType(new IRPointerType(new IRClassType(NowClass.Identify))),"alloca0")));
                 ArrayList<IRValue> ParaList = new ArrayList<>();
-                ParaList.add(new IRTmpVar(new IRPointerType(new IRClassType(NowClass.Identify)),"0"));
+                ParaList.add(ThisValue);
                 for (var iter : node.FunctionList) {
                     iter.accept(this);
                     ParaList.add(iter.Value);

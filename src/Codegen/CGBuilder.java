@@ -50,28 +50,36 @@ public class CGBuilder {
         }
 
 
-//        String namecolor= "testUncolor.s";
-//        OutputStream colorOutput=new FileOutputStream(namecolor);
-//        CGPrint(colorOutput);
+        String namecolor= "testUncolor.s";
+        OutputStream colorOutput=new FileOutputStream(namecolor);
+        CGPrint(colorOutput);
 
-        for (var Func:FuncList){
-            System.out.println(Func.Name);
-            while (true) {
-                ColorGraph Color=new ColorGraph(Func,17);
-                if (Color.FindPlan==true) {
+//        int id=0;
+//        for (var Func:FuncList){
+//            System.out.println(Func.Name+id);
+//            while (true) {
+//                ColorGraph Color=new ColorGraph(Func,17);
+//                if (Color.FindPlan==true) {
 //                    for (var Name:Color.ColorMap.keySet())
 //                        System.out.println(Name+"     "+Color.ColorMap.get(Name));
-                    AdvanceColor(Func,Color.ColorMap);
-                    break;
-                }
-                else {
-
-                    for (var Name:Color.PutInMemList)
-                        System.out.println(Name);
-                    PutInMem(Func, Color.PutInMemList);
-                }
-            }
-//            BasicColor(Func);
+//                    AdvanceColor(Func,Color.ColorMap);
+//                    break;
+//                }
+//                else {
+//
+//                    for (var Name:Color.PutInMemList)
+//                        System.out.println(Name);
+//                    PutInMem(Func, Color.PutInMemList);
+//                }
+//                OutputStream CheckOutput=new FileOutputStream("check"+id);
+//                CGPrint(CheckOutput);
+//            }
+////            BasicColor(Func);
+//            OutRangeDelete(Func);
+//        }
+        for (var Func:FuncList){
+            PutInMem(Func,null);
+            BasicColor(Func);
             OutRangeDelete(Func);
         }
     }
@@ -456,8 +464,8 @@ public class CGBuilder {
             for (CGInst Inst:NedToReplaceList)
             {
                 if (Inst.rs1 instanceof VirtualReg) {
-                    boolean Replace = InMemList.contains(((VirtualReg) Inst.rs1).Name);
-//                    boolean Replace=true;
+                    boolean Replace = true;
+                    if (InMemList!=null) InMemList.contains(((VirtualReg) Inst.rs1).Name);
                     if (Replace) {
                         VirtualReg ReplaceReg = Func.NewRegister();
                         Block.AddPre(Inst, new CGload(CGload.OP.lw, ReplaceReg, -Func.RegID(((VirtualReg) Inst.rs1).Name), s0));
@@ -465,8 +473,8 @@ public class CGBuilder {
                     }
                 }
                 if (Inst.rs2 instanceof VirtualReg) {
-                    boolean Replace = InMemList.contains(((VirtualReg) Inst.rs2).Name);
-//                    boolean Replace=true;
+                    boolean Replace= true;
+                    if (InMemList!=null) InMemList.contains(((VirtualReg) Inst.rs2).Name);
                     if (Replace) {
                         VirtualReg ReplaceReg = Func.NewRegister();
                         Block.AddPre(Inst, new CGload(CGload.OP.lw, ReplaceReg, - Func.RegID(((VirtualReg) Inst.rs2).Name), s0));
@@ -474,8 +482,8 @@ public class CGBuilder {
                     }
                 }
                 if (Inst.rd instanceof VirtualReg) {
-                    boolean Replace = InMemList.contains(((VirtualReg) Inst.rd).Name);
-//                    boolean Replace=true;
+                    boolean Replace = true;
+                    if (InMemList!=null) InMemList.contains(((VirtualReg) Inst.rd).Name);
                     if (Replace) {
                         VirtualReg ReplaceReg = Func.NewRegister();
                         Block.AddNex(Inst, new CGstore(CGstore.OP.sw, ReplaceReg, -Func.RegID(((VirtualReg) Inst.rd).Name), s0));

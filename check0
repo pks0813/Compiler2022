@@ -4,41 +4,43 @@
     .p2align    2
 Init:
 	mv s0 , sp
-	addi sp,sp,0
-	mv %raAddr , ra
+	addi sp,sp,-8
+	mv s2 , ra
+	sw s2 , 0(sp)
 	j entry0
 entry0:
 	beqz zero,newExpr0.dep0.Initial0
 
 newExpr0.dep0.Initial0:
-	li %NewRegist0 , 4
-	li %NewRegist1 , 32
-	mul %0, %NewRegist0, %NewRegist1
-	li %NewRegist2 , 32
-	add %1, %0, %NewRegist2
-	li %NewRegist3 , 8
-	div %2, %1, %NewRegist3
-	mv a0 , %2
+	li s2 , 4
+	li s3 , 32
+	mul s3, s2, s3
+	li s2 , 32
+	add s3, s3, s2
+	li s2 , 8
+	div s2, s3, s2
+	mv a0 , s2
 	call malloc
-	mv %3 , a0
-	mv %4 , %3
-	li %NewRegist4 , 4
-	sw %NewRegist4 , 0(%4)
-	li %NewRegist5 , 4
-	li %NewRegist6 , 1
-	mul %NewRegist5, %NewRegist5, %NewRegist6
-	add %5, %4, %NewRegist5
-	mv %6 , %5
-	mv %7 , %6
-	sw %7 , -4(Initialsp)
+	mv s2 , a0
+	mv s3 , s2
+	li s2 , 4
+	sw s2 , 0(s3)
+	li s2 , 4
+	li s4 , 1
+	mul s2, s2, s4
+	add s2, s3, s2
+	mv s2 , s2
+	mv s2 , s2
+	sw s2 , 4(sp)
 	beqz zero,newExpr0.Finish0
 
 newExpr0.Finish0:
-	lw %8 , -4(Initialsp)
-	la %NewRegist7 , a
-	sw %8 , 0(%NewRegist7)
-	mv ra , %raAddr
-	addi sp,sp,0
+	lw s2 , 4(sp)
+	la s3 , a
+	sw s2 , 0(s3)
+	lw s2 , 0(sp)
+	mv ra , s2
+	addi sp,sp,8
 	ret
 
 
@@ -47,7 +49,8 @@ newExpr0.Finish0:
 main:
 	mv s0 , sp
 	addi sp,sp,0
-	mv %raAddr , ra
+	mv %NewRegist55 , ra
+	sw %NewRegist55 , -20(Initialsp)
 	j entry1
 entry1:
 	call Init
@@ -159,11 +162,14 @@ ForLoop11:
 	lw %41 , -16(Initialsp)
 	li %NewRegist24 , 4
 	mul %NewRegist24, %NewRegist24, %41
-	add %42, %40, %NewRegist24
-	lw %43 , 0(%42)
+	add %NewRegist56, %40, %NewRegist24
+	sw %NewRegist56 , -24(Initialsp)
+	lw %NewRegist57 , -24(Initialsp)
+	lw %43 , 0(%NewRegist57)
 	call getInt
 	mv %44 , a0
-	sw %44 , 0(%42)
+	lw %NewRegist58 , -24(Initialsp)
+	sw %44 , 0(%NewRegist58)
 	beqz zero,ForEnd11
 
 ForEnd11:
@@ -325,7 +331,8 @@ ForFinish41:
 	sw %NewRegist54 , -4(Initialsp)
 	lw %98 , -4(Initialsp)
 	mv a0 , %98
-	mv ra , %raAddr
+	lw %NewRegist59 , -20(Initialsp)
+	mv ra , %NewRegist59
 	addi sp,sp,0
 	ret
 

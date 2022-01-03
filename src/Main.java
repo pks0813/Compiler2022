@@ -21,8 +21,8 @@ public class Main {
     public static void main(String[] args) throws Exception{
     String namein = "test.c";
     InputStream input = new FileInputStream(namein);
-//    String namell= "test.ll";
-//    OutputStream llOutput=new FileOutputStream(namell);
+    String namell= "test.ll";
+    OutputStream llOutput=new FileOutputStream(namell);
     String names= "output.s";
     OutputStream sOutput=new FileOutputStream(names);
 
@@ -42,7 +42,7 @@ public class Main {
         SemanticAns.visit(ASTRoot);
         IRBuilder IRbuilder=new IRBuilder(SemanticAns.WolrdScope);
         IRbuilder.visit(ASTRoot);
-//        new IRPrint(IRbuilder,llOutput);
+        new IRPrint(IRbuilder,llOutput);
         CGBuilder CGbuilder=new CGBuilder(IRbuilder);
         CGbuilder.CGPrint(sOutput);
     } catch (error er) {
