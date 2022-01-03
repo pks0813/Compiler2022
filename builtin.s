@@ -435,6 +435,52 @@ _struct_string_ord:                     # @_struct_string_ord
 	.size	_struct_string_ord, .Lfunc_end14-_struct_string_ord
 	.cfi_endproc
                                         # -- End function
+	.globl	_str_substring          # -- Begin function _str_substring
+	.p2align	2
+	.type	_str_substring,@function
+_str_substring:                         # @_str_substring
+	.cfi_startproc
+# %bb.0:
+	addi	sp, sp, -32
+	.cfi_def_cfa_offset 32
+	sw	ra, 28(sp)
+	sw	s0, 24(sp)
+	.cfi_offset ra, -4
+	.cfi_offset s0, -8
+	addi	s0, sp, 32
+	.cfi_def_cfa s0, 0
+	sw	a0, -16(s0)
+	sw	a1, -20(s0)
+	sw	a2, -24(s0)
+	lw	a0, -24(s0)
+	lw	a1, -20(s0)
+	sub	a0, a0, a1
+	addi	a0, a0, 1
+	srai	a1, a0, 31
+	call	malloc
+	sw	a0, -32(s0)
+	lw	a0, -32(s0)
+	lw	a1, -16(s0)
+	lw	a2, -20(s0)
+	add	a1, a1, a2
+	lw	a3, -24(s0)
+	sub	a2, a3, a2
+	call	memcpy
+	lw	a0, -32(s0)
+	lw	a1, -24(s0)
+	lw	a2, -20(s0)
+	sub	a1, a1, a2
+	add	a0, a0, a1
+	sb	zero, 0(a0)
+	lw	a0, -32(s0)
+	lw	s0, 24(sp)
+	lw	ra, 28(sp)
+	addi	sp, sp, 32
+	ret
+.Lfunc_end15:
+	.size	_str_substring, .Lfunc_end15-_str_substring
+	.cfi_endproc
+                                        # -- End function
 	.type	.L.str,@object          # @.str
 	.section	.rodata.str1.1,"aMS",@progbits,1
 .L.str:

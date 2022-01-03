@@ -58,7 +58,7 @@ public class CGBuilder {
         for (var Func:FuncList){
             System.out.println(Func.Name+id);
             while (true) {
-                ColorGraph Color=new ColorGraph(Func,5);
+                ColorGraph Color=new ColorGraph(Func,17);
                 if (Color.FindPlan==true) {
                     if (Func.Name=="main")
                     for (var Name:Color.ColorMap.keySet())
