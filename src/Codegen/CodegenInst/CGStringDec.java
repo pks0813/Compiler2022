@@ -22,7 +22,7 @@ public class CGStringDec {
         String rs=new String(x);
         rs = rs.replace("\\", "\\\\");
         rs = rs.replace("\n", "\\n");
-//        rs = rs.replace("\"", "\"");
+        rs = rs.replace("\"", "\\\"");
         rs = rs.replace("\0", "");
         return rs;
     }

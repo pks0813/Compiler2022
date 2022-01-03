@@ -918,7 +918,7 @@ public class IRBuilder implements ASTVisitor {
     public void visit(ThisExprNode node) {
 
         IRValue ThisValue = new IRTmpVar(new IRPointerType(new IRClassType(NowClass.Identify)), String.valueOf(getID()));
-        NowBlock.pushback(new load(ThisValue,new IRTmpVar(new IRPointerType(new IRPointerType(new IRClassType(NowClass.Identify))),String.valueOf(getID()))));
+        NowBlock.pushback(new load(ThisValue,new IRTmpVar(new IRPointerType(new IRPointerType(new IRClassType(NowClass.Identify))),"alloca0")));
         node.Value=ThisValue;
     }
 
