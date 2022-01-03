@@ -819,12 +819,12 @@ public class IRBuilder implements ASTVisitor {
         NowFunc.FuncAlloc=new ArrayList<>();
         NowBlock=new InstBlock("entry");
         nowID=0;
+        NowScope=new IRVarScope(null);
         for (var Iter:node.List)
             if (Iter instanceof VardeclearNode) Iter.accept(this);
         NowBlock.pushback(new ret(null));
         NowFunc.FuncBlock.add(NowBlock);
         FuncList.add(NowFunc);//VarInit
-
         for (var Iter:node.List)
             if (Iter instanceof MainFunctionDeclearNode) Iter.accept(this);
         for (var Iter:node.List)
