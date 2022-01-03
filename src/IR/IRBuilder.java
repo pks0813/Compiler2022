@@ -371,7 +371,7 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(ContinueNode node) {
-        NowBlock.pushback(new br("For End"+NowLoopID));
+        NowBlock.pushback(new br("ForEnd"+NowLoopID));
     }
 
     @Override
