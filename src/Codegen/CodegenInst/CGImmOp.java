@@ -9,8 +9,8 @@ public class CGImmOp extends CGInst{
         addi, slti, sltiu, andi, ori, xori, slli
     }
     OP ImmOP;
-    IntImm imm;
-    public CGImmOp(OP _ImmOP, CGReg _rd, CGReg _rs1, IntImm _imm){
+    public int imm;
+    public CGImmOp(OP _ImmOP, CGReg _rd, CGReg _rs1, int _imm){
         super();
         ImmOP=_ImmOP;
 //        DefList.add(rd=_rd);

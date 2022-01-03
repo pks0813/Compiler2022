@@ -5,8 +5,8 @@ import Codegen.CodegenInst.CGInst;
 import java.util.ArrayList;
 
 public class CGBlock {
-    CGInst Head=null,Tail=null;
-    String Name;
+    public CGInst Head=null,Tail=null;
+    public String Name;
     public CGBlock(String _Name){
         Name=_Name;
     }

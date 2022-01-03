@@ -11,10 +11,10 @@ public class CGStringDec {
     }
     @Override
     public String toString() {
-        return "\t.type\t"+Name+".Str0,@object           # @"+Name+"\n" +
+        return "\t.type\t"+Name+",@object           # @"+Name+"\n" +
                 "\t.section\t.rodata,\"a\",@progbits\n" +
                 "\t.globl\t"+Name+"\n" +
-                ".Str0:\n" +
+                Name+":\n" +
                 "\t.asciz\t\""+Change(Val)+"\"\n" +
                 "\t.size\t"+Name+", "+Val.length()+"\n";
     }

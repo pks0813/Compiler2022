@@ -5,6 +5,8 @@ import IR.IRType.AllType;
 import IR.IRValue.IRValue;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class IRFunc {
     public AllType ReturnType;

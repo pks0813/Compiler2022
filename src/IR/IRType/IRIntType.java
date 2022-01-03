@@ -12,6 +12,6 @@ public class IRIntType extends SimpleType{
 
     @Override
     public int Size() {
-        return width;
+        return 32;
     }
 }

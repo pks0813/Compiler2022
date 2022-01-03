@@ -1,9 +1,6 @@
 package Codegen.CodegenInst;
 
-import Codegen.CGValue.CGReg;
-import Codegen.CGValue.Imm;
-import Codegen.CGValue.IntImm;
-import Codegen.CGValue.VirtualReg;
+import Codegen.CGValue.*;
 import IR.IRType.IRIntType;
 
 public class CGstore extends CGMemInst{
@@ -11,7 +8,6 @@ public class CGstore extends CGMemInst{
     public enum OP{
         sb,sw
     }
-    int Offset;
     OP StoreOP;
 //    public CGstore(OP _StoreOP, CGReg _rs2, Imm _Offset, CGReg _rs1){
 //        super();
@@ -35,8 +31,7 @@ public class CGstore extends CGMemInst{
 
     @Override
     public String toString() {
-        if (Offset>=MX)
-            return StoreOP+ " " +rs2+" , "+(Offset-MX+FuncOffset)+"("+rs1+")";
-        else return StoreOP+ " " +rs2+" , "+Offset+"("+rs1+")";
+        return StoreOP+ " " +rs2+" , "+Offset+"("+rs1+")";
     }
+
 }

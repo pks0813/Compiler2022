@@ -32,7 +32,7 @@ char* toString(int x){
     char* S=malloc(mxSize);
     S[0]='\0';
     sprintf(S,"%d",x);
-    return S;  
+    return S;
 }
 int _struct_string_length(char *S){
     return strlen(S);
@@ -67,11 +67,12 @@ int _struct_string_parseInt(char *S){
 
 
 int _struct_string_ord(char *S,int x){
-    return (int)(S[x]); 
+    return (int)(S[x]);
 }
 
-char* _struct_string_substring(char *a,int left,int right){
-    char* S=malloc(mxSize);
-    strncpy(S,a+left,right-left);
-    return S;
-}
+//char* _struct_string_substring(char *a,int left,int right){
+//    char* S=malloc(mxSize);
+//    strncpy(S,a+left,right-left);
+//    return S;
+//}
+//int main(){}

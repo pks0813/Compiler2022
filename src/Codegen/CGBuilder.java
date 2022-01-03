@@ -9,6 +9,7 @@ import IR.IRInst.*;
 import IR.IRType.IRPointerType;
 import IR.IRValue.*;
 import IR.InstBlock;
+import Optimize.ColorGraph;
 
 import java.awt.*;
 import java.io.FileNotFoundException;
@@ -18,25 +19,26 @@ import java.io.PrintWriter;
 import java.util.*;
 
 public class CGBuilder {
-    static int MX=1000000;
-    ArrayList<CGFunc> FuncList;
+//    static int MX=1000000;
+    public ArrayList<CGFunc> FuncList;
     ArrayList<String> GlobalList;//都变成i32
     ArrayList<CGStringDec> StringDecList;
     CGFunc NowFunc;
     CGBlock NowBlock;
     //标准寄存器专区
-    PhysicalReg sp,zero,a0,ra;
+    PhysicalReg sp,zero,a0,ra,s0,s1;
 
     public CGBuilder(IRBuilder IR) throws FileNotFoundException {
         sp=new PhysicalReg("sp");
+        s0=new PhysicalReg("Initialsp");
         a0=new PhysicalReg("a0");
+        s1=new PhysicalReg("s1");
         zero=new PhysicalReg("zero");
         ra=new PhysicalReg("ra");
         FuncList=new ArrayList<>();
         GlobalList=new ArrayList<>();
         StringDecList=new ArrayList<>();
         for (var DefineInst:IR.WolrdBlock.InstList) {
-
             if (DefineInst instanceof GlobalVar)
                 GlobalList.add(((GlobalVar) (DefineInst)).Identify);
             if (DefineInst instanceof StringDec)
@@ -47,18 +49,36 @@ public class CGBuilder {
             FuncList.add(NowFunc);
         }
 
-        String namecolor= "test.s";
-        OutputStream colorOutput=new FileOutputStream(namecolor);
-        CGPrint(colorOutput);
+
+//        String namecolor= "testUncolor.s";
+//        OutputStream colorOutput=new FileOutputStream(namecolor);
+//        CGPrint(colorOutput);
 
         for (var Func:FuncList){
-            PutInMem(Func,null);
-            BasicColor(Func);
+            System.out.println(Func.Name);
+            while (true) {
+                ColorGraph Color=new ColorGraph(Func,17);
+                if (Color.FindPlan==true) {
+//                    for (var Name:Color.ColorMap.keySet())
+//                        System.out.println(Name+"     "+Color.ColorMap.get(Name));
+                    AdvanceColor(Func,Color.ColorMap);
+                    break;
+                }
+                else {
+
+                    for (var Name:Color.PutInMemList)
+                        System.out.println(Name);
+                    PutInMem(Func, Color.PutInMemList);
+                }
+            }
+//            BasicColor(Func);
+            OutRangeDelete(Func);
         }
     }
     public void CGPrint(OutputStream CGos) {
 
         PrintWriter Writer = new PrintWriter(CGos);
+        Writer.println("\t.text\n");
         for (var Func:FuncList)
             Writer.println(Func.toString());
         for (var Var:GlobalList) {
@@ -80,17 +100,27 @@ public class CGBuilder {
         NowFunc=new CGFunc(Func.Name,FuncID++);
         NowFunc.NowRegisterID=0;
         CGBlock InitBlock=new CGBlock(Func.Name);
-        InitBlock.AddBack(new CGspop(true));
-        InitBlock.AddBack(new CGstore(CGstore.OP.sw,ra,NowFunc.RegID("ra")+MX,sp));
+//        InitBlock.AddBack(new CGmv(new VirtualReg("s0Addr"),s0));
+        InitBlock.AddBack(new CGmv(new PhysicalReg("s0"),sp));
+        for (var AllocaInst:Func.FuncAlloc)
+        if (AllocaInst instanceof alloca)
+        {
+            alloca _inst=(alloca) AllocaInst;
+            NowFunc.NowOffset+=4;
+//            InitBlock.AddBack(new CGImmOp(CGImmOp.OP.addi,new VirtualReg(((IRTmpVar)_inst.Beloaded).Name),new PhysicalReg("s0"),-NowFunc.NowOffset));
+            NowFunc.ConstReg.put(((IRTmpVar)_inst.Beloaded).Name,-NowFunc.NowOffset);
+        }
         for (Integer i=0;i<Math.min(Func.ParaList.size(),8);i++)
-            InitBlock.AddBack(new CGstore(CGstore.OP.sw,new PhysicalReg("a"+i.toString()),MX+NowFunc.RegID(i.toString()),sp));
+            InitBlock.AddBack(new CGstore(CGstore.OP.sw,new PhysicalReg("a"+i.toString()),-(4+i*4),sp));
         if (Func.ParaList.size()>8) {
             for (Integer i = 8; i < Func.ParaList.size(); i++) {
                 InitBlock.AddBack(new CGload(CGload.OP.lw,a0,(i-8)*4,sp));
-                InitBlock.AddBack(new CGstore(CGstore.OP.sw, a0, MX + NowFunc.RegID(i.toString()), sp));
+                InitBlock.AddBack(new CGstore(CGstore.OP.sw, a0, -(12+i*4), sp));
             }
         }
-        InitBlock.AddBack(new CGjump("entry"));
+        InitBlock.AddBack(new CGspop(true));
+        InitBlock.AddBack(new CGmv(new VirtualReg("raAddr"),ra));
+        InitBlock.AddBack(new CGjump("entry"+NowFunc.FuncID));
         NowFunc.BlockList.add(InitBlock);
         for (var Block:Func.FuncBlock) {
             AnalizeBlock(Block);
@@ -108,15 +138,41 @@ public class CGBuilder {
             IRValue lhs = ((binary) (Inst)).Left, rhs = ((binary) (Inst)).Right, Loaded = ((binary) (Inst)).LoadTo;
             VirtualReg rs1, rs2, rd;
             if (lhs instanceof IRConst) {
-                int val = lhs instanceof IRIntConst ? ((IRIntConst) lhs).val : ((IRBoolConst) lhs).val;
+                int val = ((IRConst)lhs).val;
                 rs1 = NowFunc.NewRegister();
-                NowBlock.AddBack(new CGLi(rs1, new IntImm(val)));
+                if (Math.abs(val)<2048)
+                    NowBlock.AddBack(new CGLi(rs1, new IntImm(val)));
+                else {
+                    int q=Math.abs(val);
+                    NowBlock.AddBack(new CGLi(rs1,new IntImm(q>>22)));
+                    q%=(1<<22);
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.slli,rs1,rs1,11));
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.addi,rs1,rs1,q>>11));
+                    q%=(1<<11);
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.slli,rs1,rs1,11));
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.addi,rs1,rs1,q));
+                    if (val<0)
+                        NowBlock.AddBack(new CGbinaryOp(CGbinaryOp.OP.sub,rs1,zero,rs1));
+                }
             } else rs1 = new VirtualReg(((IRTmpVar) lhs).Name);
 
             if (rhs instanceof IRConst) {
-                int val = rhs instanceof IRIntConst ? ((IRIntConst) rhs).val : ((IRBoolConst) rhs).val;
+                int val = ((IRConst)rhs).val;
                 rs2 = NowFunc.NewRegister();
-                NowBlock.AddBack(new CGLi(rs2, new IntImm(val)));
+                if (Math.abs(val)<2048)
+                    NowBlock.AddBack(new CGLi(rs2, new IntImm(val)));
+                else {
+                    int q=Math.abs(val);
+                    NowBlock.AddBack(new CGLi(rs2,new IntImm(q>>22)));
+                    q%=(1<<22);
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.slli,rs2,rs2,11));
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.addi,rs2,rs2,q>>11));
+                    q%=(1<<11);
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.slli,rs2,rs2,11));
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.addi,rs2,rs2,q));
+                    if (val<0)
+                        NowBlock.AddBack(new CGbinaryOp(CGbinaryOp.OP.sub,rs2,zero,rs2));
+                }
             } else rs2 = new VirtualReg(((IRTmpVar) rhs).Name);
             rd = new VirtualReg(((IRTmpVar) Loaded).Name);
 
@@ -161,15 +217,41 @@ public class CGBuilder {
             IRValue lhs = ((icmp) (Inst)).Left, rhs = ((icmp) (Inst)).Right, Loaded = ((icmp) (Inst)).LoadTo;
             VirtualReg rs1, rs2, rd;
             if (lhs instanceof IRConst) {
-                int val = lhs instanceof IRIntConst ? ((IRIntConst) lhs).val : ((IRBoolConst) lhs).val;
+                int val = ((IRConst)lhs).val;
                 rs1 = NowFunc.NewRegister();
-                NowBlock.AddBack(new CGLi(rs1, new IntImm(val)));
+                if (Math.abs(val)<2048)
+                    NowBlock.AddBack(new CGLi(rs1, new IntImm(val)));
+                else {
+                    int q=Math.abs(val);
+                    NowBlock.AddBack(new CGLi(rs1,new IntImm(q>>22)));
+                    q%=(1<<22);
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.slli,rs1,rs1,11));
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.addi,rs1,rs1,q>>11));
+                    q%=(1<<11);
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.slli,rs1,rs1,11));
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.addi,rs1,rs1,q));
+                    if (val<0)
+                        NowBlock.AddBack(new CGbinaryOp(CGbinaryOp.OP.sub,rs1,zero,rs1));
+                }
             } else rs1 = new VirtualReg(((IRTmpVar) lhs).Name);
 
             if (rhs instanceof IRConst) {
-                int val = rhs instanceof IRIntConst ? ((IRIntConst) rhs).val : ((IRBoolConst) rhs).val;
+                int val = ((IRConst)rhs).val;
                 rs2 = NowFunc.NewRegister();
-                NowBlock.AddBack(new CGLi(rs2, new IntImm(val)));
+                if (Math.abs(val)<2048)
+                    NowBlock.AddBack(new CGLi(rs2, new IntImm(val)));
+                else {
+                    int q=Math.abs(val);
+                    NowBlock.AddBack(new CGLi(rs2,new IntImm(q>>22)));
+                    q%=(1<<22);
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.slli,rs2,rs2,11));
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.addi,rs2,rs2,q>>11));
+                    q%=(1<<11);
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.slli,rs2,rs2,11));
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.addi,rs2,rs2,q));
+                    if (val<0)
+                        NowBlock.AddBack(new CGbinaryOp(CGbinaryOp.OP.sub,rs2,zero,rs2));
+                }
             } else rs2 = new VirtualReg(((IRTmpVar) rhs).Name);
             rd = new VirtualReg(((IRTmpVar) Loaded).Name);
             switch (NowOP) {
@@ -189,11 +271,11 @@ public class CGBuilder {
                     break;
                 case sge:
                     NowBlock.AddBack(new CGbinaryOp(CGbinaryOp.OP.slt, rd, rs1, rs2));
-                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.xori, rd, rd, new IntImm(1)));
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.xori, rd, rd, 1));
                     break;
                 case sle:
                     NowBlock.AddBack(new CGbinaryOp(CGbinaryOp.OP.slt, rd, rs2, rs1));
-                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.xori, rd, rd, new IntImm(1)));
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.xori, rd, rd, 1));
                     break;
             }
         }
@@ -209,10 +291,10 @@ public class CGBuilder {
             getelementptr _Inst = (getelementptr) Inst;
             VirtualReg rd = new VirtualReg(((IRTmpVar) _Inst.LoadTo).Name), rs1 = new VirtualReg(((IRTmpVar) _Inst.GetPointer).Name), rs2;
             if (_Inst.IDList.size() == 2)
-                NowBlock.AddBack(new CGImmOp(CGImmOp.OP.addi, rd, rs1, new IntImm(4 * ((IRIntConst) _Inst.IDList.get(1)).val)));
+                NowBlock.AddBack(new CGImmOp(CGImmOp.OP.addi, rd, rs1, 4 * ((IRIntConst) _Inst.IDList.get(1)).val));
             else {
                 VirtualReg MultiReg = NowFunc.NewRegister();
-                NowBlock.AddBack(new CGLi(MultiReg, new IntImm(((IRPointerType) _Inst.GetPointer.type).PointedType.Size())));
+                NowBlock.AddBack(new CGLi(MultiReg, new IntImm(((IRPointerType) _Inst.GetPointer.type).PointedType.Size()/8)));
                 if (_Inst.IDList.get(0) instanceof IRIntConst) {
                     rs2 =NowFunc.NewRegister();
                     NowBlock.AddBack(new CGLi(rs2, new IntImm(((IRIntConst) _Inst.IDList.get(0)).val)));
@@ -224,8 +306,11 @@ public class CGBuilder {
         if (Inst instanceof load) {
             load _Inst = (load) Inst;
             VirtualReg rd = new VirtualReg(((IRTmpVar) _Inst.LoadTo).Name);
-            if (_Inst.LoadPointer instanceof IRTmpVar)
-                NowBlock.AddBack(new CGload(CGload.OP.lw, rd, MX+NowFunc.RegID(((IRTmpVar) _Inst.LoadPointer).Name),sp));
+            if (_Inst.LoadPointer instanceof IRTmpVar) {
+                if (NowFunc.ConstReg.containsKey(((IRTmpVar) _Inst.LoadPointer).Name))
+                    NowBlock.AddBack(new CGload(CGload.OP.lw, rd, NowFunc.ConstReg.get(((IRTmpVar) _Inst.LoadPointer).Name), s0));
+                else NowBlock.AddBack(new CGload(CGload.OP.lw, rd, 0, new VirtualReg(((IRTmpVar) _Inst.LoadPointer).Name)));
+            }
             else {
 //                NowBlock.AddBack(new CGlui(rd, new GlobalImm(GlobalImm.type.hi, new GlobalReg(((IRGlobalVar) _Inst.LoadPointer).Name))));
 //                NowBlock.AddBack(new CGload(CGload.OP.lw, rd, new GlobalImm(GlobalImm.type.lo, new GlobalReg(((IRGlobalVar) _Inst.LoadPointer).Name)), rd));
@@ -239,14 +324,30 @@ public class CGBuilder {
             CGReg Value=null;
             if (_Inst.StoreValue instanceof IRConst)
             {
-                Value=NowFunc.NewRegister();
-                NowBlock.AddBack(new CGLi(Value, new IntImm(((IRConst) _Inst.StoreValue).val)));
+                int val=((IRConst) _Inst.StoreValue).val;
+                Value = NowFunc.NewRegister();
+                if (Math.abs(val)<2048)
+                    NowBlock.AddBack(new CGLi(Value, new IntImm(val)));
+                else {
+                    int q=Math.abs(val);
+                    NowBlock.AddBack(new CGLi(Value,new IntImm(q>>22)));
+                    q%=(1<<22);
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.slli,Value,Value,11));
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.addi,Value,Value,q>>11));
+                    q%=(1<<11);
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.slli,Value,Value,11));
+                    NowBlock.AddBack(new CGImmOp(CGImmOp.OP.addi,Value,Value,q));
+                    if (val<0)
+                        NowBlock.AddBack(new CGbinaryOp(CGbinaryOp.OP.sub,Value,zero,Value));
+                }
             }
             else if (_Inst.StoreValue instanceof IRTmpVar)
                 Value=new VirtualReg(((IRTmpVar)_Inst.StoreValue).Name);
 
             if (_Inst.StorePointer instanceof IRTmpVar) {
-                NowBlock.AddBack(new CGstore(CGstore.OP.sw, Value, MX+NowFunc.RegID(((IRTmpVar) _Inst.StorePointer).Name), sp));
+                if (NowFunc.ConstReg.containsKey(((IRTmpVar) _Inst.StorePointer).Name))
+                    NowBlock.AddBack(new CGstore(CGstore.OP.sw, Value, NowFunc.ConstReg.get(((IRTmpVar) _Inst.StorePointer).Name), s0));
+                else NowBlock.AddBack(new CGstore(CGstore.OP.sw, Value, 0,new VirtualReg(((IRTmpVar) _Inst.StorePointer).Name)));
             }else {
                 VirtualReg NowAddr = NowFunc.NewRegister();
                 NowBlock.AddBack(new CGla(NowAddr, new GlobalReg(((IRGlobalVar) _Inst.StorePointer).Name)));
@@ -296,8 +397,10 @@ public class CGBuilder {
                         NowBlock.AddBack(new CGstore(CGstore.OP.sw, zero, 4 * (i - 8), sp));
                 }
             NowBlock.AddBack(new CGcall(_Inst.FuncName));
+//            NowBlock.AddBack(new CGmv(s0,new VirtualReg("s0Addr")));
             if (_Inst.Loaded != null)
                 NowBlock.AddBack(new CGmv(new VirtualReg(((IRTmpVar) _Inst.Loaded).Name), new PhysicalReg("a0")));
+
             NowFunc.mxFuncNeed=Math.max(NowFunc.mxFuncNeed,_Inst.ParaList.size()-8);
         }
         if (Inst instanceof br) {
@@ -317,12 +420,28 @@ public class CGBuilder {
         if (Inst instanceof ret) {
             ret _Inst = (ret) Inst;
             if (_Inst.value != null) {
-                if (_Inst.value instanceof IRConst)
-                    NowBlock.AddBack(new CGLi(a0, new IntImm(((IRConst) _Inst.value).val)));
+                if (_Inst.value instanceof IRConst) {
+
+                    int val=((IRConst) _Inst.value).val;
+                    if (Math.abs(val)<2048)
+                        NowBlock.AddBack(new CGLi(a0, new IntImm(val)));
+                    else {
+                        int q=Math.abs(val);
+                        NowBlock.AddBack(new CGLi(a0,new IntImm(q>>22)));
+                        q%=(1<<22);
+                        NowBlock.AddBack(new CGImmOp(CGImmOp.OP.slli,a0,a0,11));
+                        NowBlock.AddBack(new CGImmOp(CGImmOp.OP.addi,a0,a0,q>>11));
+                        q%=(1<<11);
+                        NowBlock.AddBack(new CGImmOp(CGImmOp.OP.slli,a0,a0,11));
+                        NowBlock.AddBack(new CGImmOp(CGImmOp.OP.addi,a0,a0,q));
+                        if (val<0)
+                            NowBlock.AddBack(new CGbinaryOp(CGbinaryOp.OP.sub,a0,zero,a0));
+                    }
+                }
                 else NowBlock.AddBack(new CGmv(a0, new VirtualReg(((IRTmpVar) _Inst.value).Name)));
             }
+            NowBlock.AddBack(new CGmv(ra,new VirtualReg("raAddr")));
             NowBlock.AddBack(new CGspop(false));
-            NowBlock.AddBack(new CGload(CGload.OP.lw,ra,NowFunc.RegID("ra")+MX,sp));
             NowBlock.AddBack(new CGret());
         }
     }
@@ -337,32 +456,83 @@ public class CGBuilder {
             for (CGInst Inst:NedToReplaceList)
             {
                 if (Inst.rs1 instanceof VirtualReg) {
-//                    boolean Replace = InMemList.contains(((VirtualReg) Inst.rs1).Name);
-                    boolean Replace=true;
+                    boolean Replace = InMemList.contains(((VirtualReg) Inst.rs1).Name);
+//                    boolean Replace=true;
                     if (Replace) {
                         VirtualReg ReplaceReg = Func.NewRegister();
-                        Block.AddPre(Inst, new CGload(CGload.OP.lw, ReplaceReg, MX + Func.RegID(((VirtualReg) Inst.rs1).Name), sp));
+                        Block.AddPre(Inst, new CGload(CGload.OP.lw, ReplaceReg, -Func.RegID(((VirtualReg) Inst.rs1).Name), s0));
                         Inst.rs1=ReplaceReg;
                     }
                 }
                 if (Inst.rs2 instanceof VirtualReg) {
-//                    boolean Replace = InMemList.contains(((VirtualReg) Inst.rs2).Name);
-                    boolean Replace=true;
+                    boolean Replace = InMemList.contains(((VirtualReg) Inst.rs2).Name);
+//                    boolean Replace=true;
                     if (Replace) {
                         VirtualReg ReplaceReg = Func.NewRegister();
-                        Block.AddPre(Inst, new CGload(CGload.OP.lw, ReplaceReg, MX + Func.RegID(((VirtualReg) Inst.rs2).Name), sp));
+                        Block.AddPre(Inst, new CGload(CGload.OP.lw, ReplaceReg, - Func.RegID(((VirtualReg) Inst.rs2).Name), s0));
                         Inst.rs2=ReplaceReg;
                     }
                 }
                 if (Inst.rd instanceof VirtualReg) {
-//                    boolean Replace = InMemList.contains(((VirtualReg) Inst.rd).Name);
-                    boolean Replace=true;
+                    boolean Replace = InMemList.contains(((VirtualReg) Inst.rd).Name);
+//                    boolean Replace=true;
                     if (Replace) {
                         VirtualReg ReplaceReg = Func.NewRegister();
-                        Block.AddNex(Inst, new CGstore(CGstore.OP.sw, ReplaceReg, MX + Func.RegID(((VirtualReg) Inst.rd).Name), sp));
+                        Block.AddNex(Inst, new CGstore(CGstore.OP.sw, ReplaceReg, -Func.RegID(((VirtualReg) Inst.rd).Name), s0));
                         Inst.rd=ReplaceReg;
                     }
                 }
+            }
+        }
+    }
+
+    public void OutRangeDelete(CGFunc Func){
+        CGMemInst.FuncOffset=Func.NowOffset+4*Func.mxFuncNeed;
+        CGspop.Value=Func.NowOffset+4*Func.mxFuncNeed;
+        for (var Block:Func.BlockList)
+        {
+            ArrayList<CGInst> NedToReplaceList=new ArrayList<>();
+
+            for (CGInst Inst=Block.Head;Inst!=null;Inst=Inst.NexInst)
+                NedToReplaceList.add(Inst);
+            for (CGInst Inst:NedToReplaceList) {
+                if (Inst instanceof CGMemInst)
+                {
+                    CGMemInst _Inst=(CGMemInst) Inst;
+                    _Inst.UpDate();
+                    if (Math.abs(_Inst.Offset)>=2048)
+                    {
+                        int q=Math.abs(_Inst.Offset),sig=(_Inst.Offset>0) ? 1 : -1;
+                        Block.AddPre(_Inst,new CGImmOp(CGImmOp.OP.addi,s1,_Inst.rs1,q%1024*sig));
+                        for (int i=1;i<=q/1024;i++)
+                            Block.AddPre(_Inst,new CGImmOp(CGImmOp.OP.addi,s1,s1,1024*sig));
+                        _Inst.Offset=0;_Inst.rs1=s1;
+                    }
+                }
+                if (Inst instanceof CGImmOp)
+                {
+                    CGImmOp _Inst=(CGImmOp) Inst;
+                    if (Math.abs(_Inst.imm)>=2048)
+                    {
+                        int q=Math.abs(_Inst.imm),sig=(_Inst.imm>0) ? 1 : -1;
+                        _Inst.imm=q%1024*sig;
+                        for (int i=1;i<=q/1024;i++)
+                            Block.AddNex(_Inst,new CGImmOp(CGImmOp.OP.addi,_Inst.rd,_Inst.rd,1024*sig));
+                    }
+                }
+                if (Inst instanceof CGspop)
+                {
+                    CGspop _Inst=(CGspop) Inst;
+                    _Inst.UpDate();
+                    if (Math.abs(_Inst.RealValue)>=2048)
+                    {
+                        int q=Math.abs(_Inst.RealValue),sig=(_Inst.RealValue>0) ? 1 : -1;
+                        _Inst.RealValue=q%1024*sig;
+                        for (int i=1;i<=q/1024;i++)
+                            Block.AddNex(_Inst,new CGImmOp(CGImmOp.OP.addi,sp,sp,1024*sig));
+                    }
+                }
+
             }
         }
     }
@@ -407,4 +577,19 @@ public class CGBuilder {
             }
         }
     }
+    public void AdvanceColor(CGFunc Func,Map<String,Integer> ColorMap){
+        for (var Block:Func.BlockList)
+            for (CGInst Inst=Block.Head;Inst!=null;Inst=Inst.NexInst){
+//                System.out.println(Inst.rs1);
+                if (Inst.rs1 instanceof VirtualReg)
+                    Inst.rs1=new PhysicalReg(PhysicalReg.colorReg[ColorMap.get(((VirtualReg) Inst.rs1).Name)]);
+//                System.out.println(Inst.rs2);
+                if (Inst.rs2 instanceof VirtualReg)
+                    Inst.rs2=new PhysicalReg(PhysicalReg.colorReg[ColorMap.get(((VirtualReg) Inst.rs2).Name)]);
+//                System.out.println(Inst.rd);
+                if (Inst.rd instanceof VirtualReg)
+                    Inst.rd=new PhysicalReg(PhysicalReg.colorReg[ColorMap.get(((VirtualReg) Inst.rd).Name)]);
+                }
+    }
+
 }

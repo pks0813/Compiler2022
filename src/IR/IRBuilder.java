@@ -88,6 +88,7 @@ public class IRBuilder implements ASTVisitor {
     public void visit(BasicDeclearFunctionNode node) {
         if (NowClass == null) {
             NowFunc = new IRFunc(ChangeType(node.BackType), node.Identify);
+            allocaID=0;
             NowFunc.FuncAlloc=new ArrayList<>();
             NowFunc.FuncInitial=new ArrayList<>();
 
@@ -133,6 +134,7 @@ public class IRBuilder implements ASTVisitor {
         else
         {
             NowFunc = new IRFunc(ChangeType(node.BackType), "_struct_"+NowClass.Identify+"_"+node.Identify);
+            allocaID=0;
             NowFunc.FuncAlloc=new ArrayList<>();
             NowBlock = new InstBlock("entry");
             NowScope = new IRVarScope(null);
@@ -140,14 +142,19 @@ public class IRBuilder implements ASTVisitor {
                 nowID = 1;
             else
                 nowID = node.ParaList.List.size() + 1;
-            NowFunc.ParaList.add(new IRPointerType(new IRClassType(NowClass.Identify)));
+
+            AllType NowType = new IRPointerType(new IRClassType(NowClass.Identify));
+            IRValue NowValue = new IRTmpVar(new IRPointerType(NowType), "alloca"+getAllocaID());
+            NowFunc.FuncAlloc.add(new alloca(NowValue, NowType));
+            NowFunc.FuncInitial.add(new store(NowValue, new IRTmpVar(NowType, 0)));
+            NowFunc.ParaList.add(NowType);
             for (int i = 0; i < node.ParaList.List.size(); i++) {
                 OneDeclearNode Decl = node.ParaList.List.get(i);
                 NowScope.AddVar(Decl.Identify, "alloca"+allocaID);
-                AllType NowType = ChangeType(Decl.TypeIdentify);
-                IRValue NowValue = new IRTmpVar(new IRPointerType(NowType), "alloca"+getAllocaID());
+                NowType = ChangeType(Decl.TypeIdentify);
+                NowValue = new IRTmpVar(new IRPointerType(NowType), "alloca"+getAllocaID());
                 NowFunc.FuncAlloc.add(new alloca(NowValue, NowType));
-                NowFunc.FuncInitial.add(new store(NowValue, new IRTmpVar(NowType, String.valueOf(i))));
+                NowFunc.FuncInitial.add(new store(NowValue, new IRTmpVar(NowType, String.valueOf(i+1))));//I have changed
                 NowFunc.ParaList.add(NowType);
             }
             if (ChangeType(node.BackType)!=null) {
@@ -323,6 +330,7 @@ public class IRBuilder implements ASTVisitor {
         {
             NowFunc = new IRFunc(null, "_struct_"+node.Identify+"_"+node.Identify);
             NowFunc.FuncAlloc=new ArrayList<>();
+            NowFunc.FuncAlloc.add(new alloca(new IRTmpVar(new IRIntType(32),"Idon't"),new IRIntType(32)));
             NowBlock = new InstBlock("entry");
             NowScope = new IRVarScope(null);
             ArrayList<AllType> ParaList=new ArrayList<>();
@@ -496,11 +504,13 @@ public class IRBuilder implements ASTVisitor {
                     node.Value = TmpValue;
                 }
             }else {
-                IRValue TmpPointer=new IRTmpVar(new IRPointerType(VarType),String.valueOf(getID()));
+                IRValue ThisValue = new IRTmpVar(new IRPointerType(new IRClassType(NowClass.Identify)), String.valueOf(getID()));
                 ArrayList<IRValue> List=new ArrayList<>();
                 List.add(new IRIntConst(32,0));
                 List.add(new IRIntConst(32,ClassID));
-                NowBlock.pushback(new getelementptr(TmpPointer,List,new IRTmpVar(new IRPointerType(new IRClassType(NowClass.Identify)),"0")));
+                NowBlock.pushback(new load(ThisValue,new IRTmpVar(new IRPointerType(new IRPointerType(new IRClassType(NowClass.Identify))),"alloca0")));
+                IRValue TmpPointer=new IRTmpVar(new IRPointerType(VarType),String.valueOf(getID()));
+                NowBlock.pushback(new getelementptr(TmpPointer,List,ThisValue));
                 node.Pointer=TmpPointer;
                 if (AssignLeft==false) {
                     IRValue TmpValue = new IRTmpVar(VarType, String.valueOf(getID()));
@@ -565,6 +575,7 @@ public class IRBuilder implements ASTVisitor {
     public void visit(MainFunctionDeclearNode node) {
         nowID=0;
         NowFunc=new IRFunc(new IRIntType(32),"main");
+        allocaID=0;
         NowFunc.FuncAlloc=new ArrayList<>();
         NowBlock=new InstBlock("entry");
         NowBlock.pushback(new call(null,"Init",new ArrayList<>()));
@@ -630,7 +641,7 @@ public class IRBuilder implements ASTVisitor {
             NowBlock.pushback(new binary(TmpValue0,List.get(dep),new IRIntConst(32, NowType.Size()), binary.binaryOp.mul));
 
             IRValue TmpValue1=new IRTmpVar(new IRIntType(32),getID());
-            NowBlock.pushback(new binary(TmpValue1,TmpValue0,new IRIntConst(32, 39), binary.binaryOp.add));
+            NowBlock.pushback(new binary(TmpValue1,TmpValue0,new IRIntConst(32, 32), binary.binaryOp.add));
 
             IRValue TmpValue2=new IRTmpVar(new IRIntType(32),getID());
             NowBlock.pushback(new binary(TmpValue2,TmpValue1,new IRIntConst(32, 8), binary.binaryOp.sdiv));
@@ -903,7 +914,10 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(ThisExprNode node) {
-        node.Value=new IRTmpVar(new IRPointerType(new IRClassType(NowClass.Identify)),"0");
+
+        IRValue ThisValue = new IRTmpVar(new IRPointerType(new IRClassType(NowClass.Identify)), String.valueOf(getID()));
+        NowBlock.pushback(new load(ThisValue,new IRTmpVar(new IRPointerType(new IRPointerType(new IRClassType(NowClass.Identify))),String.valueOf(getID()))));
+        node.Value=ThisValue;
     }
 
     @Override

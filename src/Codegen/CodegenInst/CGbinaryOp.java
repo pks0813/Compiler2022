@@ -1,5 +1,6 @@
 package Codegen.CodegenInst;
 
+import Codegen.CGValue.CGReg;
 import Codegen.CGValue.IntImm;
 import Codegen.CGValue.VirtualReg;
 
@@ -8,7 +9,7 @@ public class CGbinaryOp extends CGInst{
         add, sub, mul, div, rem, sll, sra, slt, sltu, and, or, xor
     }
     OP BinaryOP;
-    public CGbinaryOp(OP _BianryOP, VirtualReg _rd, VirtualReg _rs1, VirtualReg _rs2){
+    public CGbinaryOp(OP _BianryOP, CGReg _rd, CGReg _rs1, CGReg _rs2){
         super();
         BinaryOP=_BianryOP;
 //        DefList.add(rd=_rd);

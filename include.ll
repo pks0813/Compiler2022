@@ -215,34 +215,6 @@ define dso_local i32 @_struct_string_ord(i8* %0, i32 %1) #0 {
   ret i32 %10
 }
 
-; Function Attrs: noinline nounwind optnone uwtable
-define dso_local i8* @_struct_string_substring(i8* %0, i32 %1, i32 %2) #0 {
-  %4 = alloca i8*, align 8
-  %5 = alloca i32, align 4
-  %6 = alloca i32, align 4
-  %7 = alloca i8*, align 8
-  store i8* %0, i8** %4, align 8
-  store i32 %1, i32* %5, align 4
-  store i32 %2, i32* %6, align 4
-  %8 = call noalias i8* @malloc(i64 256) #4
-  store i8* %8, i8** %7, align 8
-  %9 = load i8*, i8** %7, align 8
-  %10 = load i8*, i8** %4, align 8
-  %11 = load i32, i32* %5, align 4
-  %12 = sext i32 %11 to i64
-  %13 = getelementptr inbounds i8, i8* %10, i64 %12
-  %14 = load i32, i32* %6, align 4
-  %15 = load i32, i32* %5, align 4
-  %16 = sub nsw i32 %14, %15
-  %17 = sext i32 %16 to i64
-  %18 = call i8* @strncpy(i8* %9, i8* %13, i64 %17) #4
-  %19 = load i8*, i8** %7, align 8
-  ret i8* %19
-}
-
-; Function Attrs: nounwind
-declare dso_local i8* @strncpy(i8*, i8*, i64) #2
-
 attributes #0 = { noinline nounwind optnone uwtable "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "frame-pointer"="all" "less-precise-fpmad"="false" "min-legal-vector-width"="0" "no-infs-fp-math"="false" "no-jump-tables"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #1 = { "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "frame-pointer"="all" "less-precise-fpmad"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }
 attributes #2 = { nounwind "correctly-rounded-divide-sqrt-fp-math"="false" "disable-tail-calls"="false" "frame-pointer"="all" "less-precise-fpmad"="false" "no-infs-fp-math"="false" "no-nans-fp-math"="false" "no-signed-zeros-fp-math"="false" "no-trapping-math"="false" "stack-protector-buffer-size"="8" "target-cpu"="x86-64" "target-features"="+cx8,+fxsr,+mmx,+sse,+sse2,+x87" "unsafe-fp-math"="false" "use-soft-float"="false" }

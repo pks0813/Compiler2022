@@ -1,15 +1,11 @@
 package Codegen.CodegenInst;
 
-import Codegen.CGValue.CGReg;
-import Codegen.CGValue.Imm;
-import Codegen.CGValue.IntImm;
-import Codegen.CGValue.VirtualReg;
+import Codegen.CGValue.*;
 
 public class CGload extends CGMemInst{
     public enum OP{
         lbu,lw
     }
-    int Offset;
     OP LoadOP;
 //    public CGload(OP _loadOP, CGReg _rd, Imm _Offset, CGReg _rs1){
 //        super();
@@ -33,8 +29,6 @@ public class CGload extends CGMemInst{
 
     @Override
     public String toString() {
-        if (Offset>=MX)
-            return LoadOP+ " " +rd+" , "+(Offset-MX+FuncOffset)+"("+rs1+")";
-        else return LoadOP+ " " +rd+" , "+Offset+"("+rs1+")";
+        return LoadOP+ " " +rd+" , "+Offset+"("+rs1+")";
     }
 }

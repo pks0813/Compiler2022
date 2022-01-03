@@ -13,7 +13,7 @@ public class IRPointerType extends SimpleType{
 
     @Override
     public int Size() {
-        return 64;
+        return 32;
     }
 
 }

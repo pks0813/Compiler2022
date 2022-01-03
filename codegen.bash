@@ -1,0 +1,1 @@
+java -jar Compiler2022.jar
