@@ -30,9 +30,13 @@ public class ColorGraph {
         //Link the Inst
         for (CGBlock Block : Func.BlockList) {
             for (CGInst Inst = Block.Head; Inst != null; Inst = Inst.NexInst) {
-                if (Inst.rd instanceof VirtualReg) {
+                if (Inst.rd instanceof VirtualReg)
                     VirtualRegMap.put(((VirtualReg) Inst.rd).Name, new GraphNode(((VirtualReg) Inst.rd).Name));
-                }
+                if (Inst.rs1 instanceof VirtualReg)
+                    VirtualRegMap.get(((VirtualReg) Inst.rs1).Name).use=true;
+                if (Inst.rs2 instanceof VirtualReg)
+                    VirtualRegMap.get(((VirtualReg) Inst.rs2).Name).use=true;
+
                 if (Inst instanceof CGret) continue;
                 else if (Inst instanceof CGjump) {
                     CGjump _Inst = (CGjump) Inst;
@@ -153,10 +157,16 @@ public class ColorGraph {
                 GraphNode NowNode=NodeStack.get(i);
                 for (var LinkNode:NowNode.Edge.values())
                 {
-                    if (LinkNode.state== GraphNode.statetype.havecolor )
+                    if (LinkNode.state== GraphNode.statetype.havecolor)
                         ColorUse[LinkNode.color]=true;
                 }
                 NowNode.state= GraphNode.statetype.havecolor;
+                if (NowNode.use==false)
+                {
+                    NowNode.color = -1;
+                    ColorMap.put(NowNode.Name,-1);
+                }
+                else
                 for (int j=0;j<ColorNum;j++)
                 {
                     if (ColorUse[j]==false) {

@@ -60,8 +60,9 @@ public class CGBuilder {
             while (true) {
                 ColorGraph Color=new ColorGraph(Func,5);
                 if (Color.FindPlan==true) {
-//                    for (var Name:Color.ColorMap.keySet())
-//                        System.out.println(Name+"     "+Color.ColorMap.get(Name));
+                    if (Func.Name=="main")
+                    for (var Name:Color.ColorMap.keySet())
+                        System.out.println(Name+"     "+Color.ColorMap.get(Name));
                     AdvanceColor(Func,Color.ColorMap);
                     break;
                 }
@@ -414,7 +415,7 @@ public class CGBuilder {
         if (Inst instanceof br) {
             br _Inst = (br) Inst;
             if (_Inst.Cond == null)
-                NowBlock.AddBack(new CGbr(CGbr.type.beqz, new PhysicalReg("zero"), _Inst.IfTrue+NowFunc.FuncID));
+                NowBlock.AddBack(new CGjump(_Inst.IfTrue+NowFunc.FuncID));
             else {
                 VirtualReg Cond;
                 if (_Inst.Cond instanceof IRBoolConst) {
@@ -422,7 +423,7 @@ public class CGBuilder {
                     NowBlock.AddBack(new CGLi(Cond, new IntImm(((IRBoolConst) _Inst.Cond).val)));
                 } else Cond = new VirtualReg(((IRTmpVar) _Inst.Cond).Name);
                 NowBlock.AddBack(new CGbr(CGbr.type.bnez, Cond, _Inst.IfTrue+NowFunc.FuncID));
-                NowBlock.AddBack(new CGbr(CGbr.type.beqz, Cond, _Inst.IfElse+NowFunc.FuncID));
+                NowBlock.AddBack(new CGjump(_Inst.IfElse+NowFunc.FuncID));
             }
         }
         if (Inst instanceof ret) {
@@ -588,16 +589,25 @@ public class CGBuilder {
     public void AdvanceColor(CGFunc Func,Map<String,Integer> ColorMap){
         for (var Block:Func.BlockList)
             for (CGInst Inst=Block.Head;Inst!=null;Inst=Inst.NexInst){
-//                System.out.println(Inst.rs1);
                 if (Inst.rs1 instanceof VirtualReg)
+                {
+//                    System.out.println(((VirtualReg) Inst.rs1).Name);
                     Inst.rs1=new PhysicalReg(PhysicalReg.colorReg[ColorMap.get(((VirtualReg) Inst.rs1).Name)]);
-//                System.out.println(Inst.rs2);
-                if (Inst.rs2 instanceof VirtualReg)
-                    Inst.rs2=new PhysicalReg(PhysicalReg.colorReg[ColorMap.get(((VirtualReg) Inst.rs2).Name)]);
-//                System.out.println(Inst.rd);
-                if (Inst.rd instanceof VirtualReg)
-                    Inst.rd=new PhysicalReg(PhysicalReg.colorReg[ColorMap.get(((VirtualReg) Inst.rd).Name)]);
                 }
+//                System.out.println(Inst.rs2);
+                if (Inst.rs2 instanceof VirtualReg) {
+
+//                    System.out.println(((VirtualReg) Inst.rs2).Name);
+                    Inst.rs2 = new PhysicalReg(PhysicalReg.colorReg[ColorMap.get(((VirtualReg) Inst.rs2).Name)]);
+                }
+//                System.out.println(Inst.rd);
+                if (Inst.rd instanceof VirtualReg){
+//                    System.out.println(((VirtualReg) Inst.rd).Name);
+                    int id=ColorMap.get(((VirtualReg) Inst.rd).Name);
+                    if (id==-1) Inst.rd=zero;
+                    else Inst.rd=new PhysicalReg(PhysicalReg.colorReg[ColorMap.get(((VirtualReg) Inst.rd).Name)]);
+                }
+            }
     }
 
 }

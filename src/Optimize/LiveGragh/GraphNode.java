@@ -12,6 +12,7 @@ public class GraphNode {
         alive,inmem,instack,havecolor
     }
     public statetype state;
+    public boolean use=false;
     public int color=-1;
     public GraphNode(String _Name){
         Name=_Name;
