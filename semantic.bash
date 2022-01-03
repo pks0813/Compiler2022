@@ -1,1 +1,1 @@
-java -jar Compiler2022.jar
+java -jar semantic.jar
