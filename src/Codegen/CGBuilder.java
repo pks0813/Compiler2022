@@ -54,34 +54,34 @@ public class CGBuilder {
         OutputStream colorOutput=new FileOutputStream(namecolor);
         CGPrint(colorOutput);
 
-//        int id=0;
-//        for (var Func:FuncList){
-//            System.out.println(Func.Name+id);
-//            while (true) {
-//                ColorGraph Color=new ColorGraph(Func,17);
-//                if (Color.FindPlan==true) {
+        int id=0;
+        for (var Func:FuncList){
+            System.out.println(Func.Name+id);
+            while (true) {
+                ColorGraph Color=new ColorGraph(Func,17);
+                if (Color.FindPlan==true) {
 //                    for (var Name:Color.ColorMap.keySet())
 //                        System.out.println(Name+"     "+Color.ColorMap.get(Name));
-//                    AdvanceColor(Func,Color.ColorMap);
-//                    break;
-//                }
-//                else {
-//
+                    AdvanceColor(Func,Color.ColorMap);
+                    break;
+                }
+                else {
+
 //                    for (var Name:Color.PutInMemList)
 //                        System.out.println(Name);
-//                    PutInMem(Func, Color.PutInMemList);
-//                }
+                    PutInMem(Func, Color.PutInMemList);
+                }
 //                OutputStream CheckOutput=new FileOutputStream("check"+id);
 //                CGPrint(CheckOutput);
-//            }
-////            BasicColor(Func);
-//            OutRangeDelete(Func);
-//        }
-        for (var Func:FuncList){
-            PutInMem(Func,null);
-            BasicColor(Func);
+            }
+//            BasicColor(Func);
             OutRangeDelete(Func);
         }
+//        for (var Func:FuncList){
+//            PutInMem(Func,null);
+//            BasicColor(Func);
+//            OutRangeDelete(Func);
+//        }
     }
     public void CGPrint(OutputStream CGos) {
 
