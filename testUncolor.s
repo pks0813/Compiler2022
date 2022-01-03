@@ -8,6 +8,96 @@ Init:
 	mv %raAddr , ra
 	j entry0
 entry0:
+	li %NewRegist0 , 0
+	la %NewRegist1 , ans
+	sw %NewRegist0 , 0(%NewRegist1)
+	beqz zero,newExpr0.dep0.Initial0
+
+newExpr0.dep0.Initial0:
+	li %NewRegist2 , 110
+	li %NewRegist3 , 32
+	mul %0, %NewRegist2, %NewRegist3
+	li %NewRegist4 , 32
+	add %1, %0, %NewRegist4
+	li %NewRegist5 , 8
+	div %2, %1, %NewRegist5
+	mv a0 , %2
+	call malloc
+	mv %3 , a0
+	mv %4 , %3
+	li %NewRegist6 , 110
+	sw %NewRegist6 , 0(%4)
+	li %NewRegist7 , 4
+	li %NewRegist8 , 1
+	mul %NewRegist7, %NewRegist7, %NewRegist8
+	add %5, %4, %NewRegist7
+	mv %6 , %5
+	mv %7 , %6
+	sw %7 , -4(Initialsp)
+	beqz zero,newExpr0.Finish0
+
+newExpr0.Finish0:
+	lw %8 , -4(Initialsp)
+	la %NewRegist9 , visit
+	sw %8 , 0(%NewRegist9)
+	beqz zero,newExpr1.dep0.Initial0
+
+newExpr1.dep0.Initial0:
+	li %NewRegist10 , 110
+	li %NewRegist11 , 32
+	mul %9, %NewRegist10, %NewRegist11
+	li %NewRegist12 , 32
+	add %10, %9, %NewRegist12
+	li %NewRegist13 , 8
+	div %11, %10, %NewRegist13
+	mv a0 , %11
+	call malloc
+	mv %12 , a0
+	mv %13 , %12
+	li %NewRegist14 , 110
+	sw %NewRegist14 , 0(%13)
+	li %NewRegist15 , 4
+	li %NewRegist16 , 1
+	mul %NewRegist15, %NewRegist15, %NewRegist16
+	add %14, %13, %NewRegist15
+	mv %15 , %14
+	mv %16 , %15
+	sw %16 , -8(Initialsp)
+	beqz zero,newExpr1.Finish0
+
+newExpr1.Finish0:
+	lw %17 , -8(Initialsp)
+	la %NewRegist17 , pre
+	sw %17 , 0(%NewRegist17)
+	beqz zero,newExpr2.dep0.Initial0
+
+newExpr2.dep0.Initial0:
+	li %NewRegist18 , 110
+	li %NewRegist19 , 32
+	mul %18, %NewRegist18, %NewRegist19
+	li %NewRegist20 , 32
+	add %19, %18, %NewRegist20
+	li %NewRegist21 , 8
+	div %20, %19, %NewRegist21
+	mv a0 , %20
+	call malloc
+	mv %21 , a0
+	mv %22 , %21
+	li %NewRegist22 , 110
+	sw %NewRegist22 , 0(%22)
+	li %NewRegist23 , 4
+	li %NewRegist24 , 1
+	mul %NewRegist23, %NewRegist23, %NewRegist24
+	add %23, %22, %NewRegist23
+	mv %24 , %23
+	mv %25 , %24
+	sw %25 , -12(Initialsp)
+	beqz zero,newExpr2.Finish0
+
+newExpr2.Finish0:
+	lw %26 , -12(Initialsp)
+	la %NewRegist25 , f
+	sw %26 , 0(%NewRegist25)
 	mv ra , %raAddr
 	addi sp,sp,0
 	ret
@@ -22,282 +112,202 @@ main:
 	j entry1
 entry1:
 	call Init
-	li a0 , 4
-	call malloc
-	mv %0 , a0
-	mv %1 , %0
-	mv a0 , %1
-	call _struct_vector_vector
-	sw %1 , -8(Initialsp)
-	beqz zero,newExpr0.dep0.Initial1
-
-newExpr0.dep0.Initial1:
-	li %NewRegist0 , 10
-	li %NewRegist1 , 32
-	mul %2, %NewRegist0, %NewRegist1
-	li %NewRegist2 , 32
-	add %3, %2, %NewRegist2
-	li %NewRegist3 , 8
-	div %4, %3, %NewRegist3
-	mv a0 , %4
-	call malloc
-	mv %5 , a0
-	mv %6 , %5
-	li %NewRegist4 , 10
-	sw %NewRegist4 , 0(%6)
-	li %NewRegist5 , 4
-	li %NewRegist6 , 1
-	mul %NewRegist5, %NewRegist5, %NewRegist6
-	add %7, %6, %NewRegist5
-	mv %8 , %7
-	mv %9 , %8
-	sw %9 , -12(Initialsp)
-	beqz zero,newExpr0.Finish1
-
-newExpr0.Finish1:
-	lw %10 , -12(Initialsp)
-	sw %10 , -16(Initialsp)
-	li %NewRegist7 , 0
-	sw %NewRegist7 , -20(Initialsp)
+	li a0 , 110
+	call origin
+	li %NewRegist0 , 0
+	sw %NewRegist0 , -8(Initialsp)
+	li %NewRegist1 , 99
+	sw %NewRegist1 , -12(Initialsp)
+	li %NewRegist2 , 100
+	sw %NewRegist2 , -16(Initialsp)
+	li %NewRegist3 , 0
+	sw %NewRegist3 , -20(Initialsp)
+	lw %0 , -12(Initialsp)
+	lw %1 , -16(Initialsp)
+	mv a0 , %0
+	mv a1 , %1
+	call build
+	mv %2 , a0
 	beqz zero,ForCond11
 
 ForCond11:
-	lw %11 , -20(Initialsp)
-	li %NewRegist8 , 10
-	slt %12, %11, %NewRegist8
-	bnez %12,ForLoop11
-	beqz %12,ForFinish11
+	lw %3 , -16(Initialsp)
+	lw %4 , -12(Initialsp)
+	lw %5 , -20(Initialsp)
+	mv a0 , %3
+	mv a1 , %4
+	mv a2 , %5
+	call find
+	mv %6 , a0
+	li %NewRegist4 , 0
+	slt %7, %NewRegist4, %6
+	bnez %7,ForLoop11
+	beqz %7,ForFinish11
 
 ForLoop11:
-	lw %13 , -16(Initialsp)
-	lw %14 , -20(Initialsp)
-	li %NewRegist9 , 4
-	mul %NewRegist9, %NewRegist9, %14
-	add %15, %13, %NewRegist9
-	lw %16 , 0(%15)
-	lw %17 , -20(Initialsp)
-	li %NewRegist10 , 9
-	sub %18, %NewRegist10, %17
-	sw %18 , 0(%15)
+	lw %8 , -16(Initialsp)
+	mv a0 , %8
+	call improve
+	mv %9 , a0
 	beqz zero,ForEnd11
 
 ForEnd11:
-	lw %19 , -20(Initialsp)
-	li %NewRegist11 , 1
-	add %20, %19, %NewRegist11
-	sw %20 , -20(Initialsp)
 	beqz zero,ForCond11
 
 ForFinish11:
-	lw %21 , -8(Initialsp)
-	lw %22 , -16(Initialsp)
-	mv a0 , %21
-	mv a1 , %22
-	call _struct_vector_init
-	la %23 , .Str0
-	mv a0 , %23
-	call print
-	lw %24 , -8(Initialsp)
-	mv a0 , %24
-	call _struct_vector_tostring
-	mv %25 , a0
-	mv a0 , %25
-	call println
-	li a0 , 4
-	call malloc
-	mv %26 , a0
-	mv %27 , %26
-	mv a0 , %27
-	call _struct_vector_vector
-	sw %27 , -24(Initialsp)
-	lw %28 , -24(Initialsp)
-	lw %29 , -8(Initialsp)
-	mv a0 , %28
-	mv a1 , %29
-	call _struct_vector_copy
-	mv %30 , a0
-	lw %31 , -24(Initialsp)
-	mv a0 , %31
-	li a1 , 3
-	li a2 , 817
-	call _struct_vector_set
-	mv %32 , a0
-	bnez %32,IFTrue11
-	beqz %32,IFFalse11
-
-IFTrue11:
-	la %33 , .Str1
-	mv a0 , %33
-	call println
-	beqz zero,IFFinish11
-
-IFFalse11:
-	beqz zero,IFFinish11
-
-IFFinish11:
-	la %34 , .Str2
-	mv a0 , %34
-	call print
-	lw %35 , -24(Initialsp)
-	mv a0 , %35
-	call _struct_vector_tostring
-	mv %36 , a0
-	mv a0 , %36
-	call println
-	la %37 , .Str3
-	mv a0 , %37
-	call print
-	lw %38 , -8(Initialsp)
-	lw %39 , -24(Initialsp)
-	mv a0 , %38
-	mv a1 , %39
-	call _struct_vector_add
-	mv %40 , a0
-	mv a0 , %40
-	call _struct_vector_tostring
-	mv %41 , a0
-	mv a0 , %41
-	call println
-	la %42 , .Str4
-	mv a0 , %42
-	call print
-	lw %43 , -8(Initialsp)
-	lw %44 , -24(Initialsp)
-	mv a0 , %43
-	mv a1 , %44
-	call _struct_vector_dot
-	mv %45 , a0
-	mv a0 , %45
+	la %10 , ans
+	lw %10 , 0(%10)
+	mv a0 , %10
 	call toString
-	mv %46 , a0
-	mv a0 , %46
+	mv %11 , a0
+	mv a0 , %11
 	call println
-	la %47 , .Str5
-	mv a0 , %47
-	call print
-	lw %48 , -24(Initialsp)
-	li %NewRegist12 , 1
-	li %NewRegist13 , 3
-	sll %49, %NewRegist12, %NewRegist13
-	mv a0 , %48
-	mv a1 , %49
-	call _struct_vector_scalarInPlaceMultiply
-	mv %50 , a0
-	mv a0 , %50
-	call _struct_vector_tostring
-	mv %51 , a0
-	mv a0 , %51
-	call println
-	li %NewRegist14 , 0
-	sw %NewRegist14 , -4(Initialsp)
-	lw %52 , -4(Initialsp)
-	mv a0 , %52
+	li %NewRegist5 , 0
+	sw %NewRegist5 , -4(Initialsp)
+	lw %12 , -4(Initialsp)
+	mv a0 , %12
 	mv ra , %raAddr
 	addi sp,sp,0
 	ret
 
 
-    .globl  _struct_vector_init
+    .globl  origin
     .p2align    2
-_struct_vector_init:
+origin:
 	mv s0 , sp
 	sw a0 , -4(sp)
-	sw a1 , -8(sp)
 	addi sp,sp,0
 	mv %raAddr , ra
 	j entry2
 entry2:
-	lw %2 , -8(Initialsp)
-	li %NewRegist0 , 0
-	xor %3, %2, %NewRegist0
-	seqz %3 , %3
-	bnez %3,IFTrue22
-	beqz %3,IFFalse22
+	lw %1 , -4(Initialsp)
+	beqz zero,newExpr3.dep0.Initial2
 
-IFTrue22:
-	mv ra , %raAddr
-	addi sp,sp,0
-	ret
-
-IFFalse22:
-	beqz zero,IFFinish22
-
-IFFinish22:
-	lw %4 , -4(Initialsp)
-	addi %5, %4, 0
-	lw %6 , -8(Initialsp)
-	mv %7 , %6
-	li %NewRegist1 , 4
-	li %NewRegist2 , -1
-	mul %NewRegist1, %NewRegist1, %NewRegist2
-	add %8, %7, %NewRegist1
-	lw %9 , 0(%8)
-	beqz zero,newExpr1.dep0.Initial2
-
-newExpr1.dep0.Initial2:
-	li %NewRegist3 , 32
-	mul %10, %9, %NewRegist3
-	li %NewRegist4 , 32
-	add %11, %10, %NewRegist4
-	li %NewRegist5 , 8
-	div %12, %11, %NewRegist5
-	mv a0 , %12
+newExpr3.dep0.Initial2:
+	li %NewRegist0 , 32
+	mul %2, %1, %NewRegist0
+	li %NewRegist1 , 32
+	add %3, %2, %NewRegist1
+	li %NewRegist2 , 8
+	div %4, %3, %NewRegist2
+	mv a0 , %4
 	call malloc
-	mv %13 , a0
-	mv %14 , %13
-	sw %9 , 0(%14)
-	li %NewRegist6 , 4
-	li %NewRegist7 , 1
-	mul %NewRegist6, %NewRegist6, %NewRegist7
-	add %15, %14, %NewRegist6
-	mv %16 , %15
-	mv %17 , %16
-	sw %17 , -12(Initialsp)
-	beqz zero,newExpr1.Finish2
+	mv %5 , a0
+	mv %6 , %5
+	sw %1 , 0(%6)
+	li %NewRegist3 , 4
+	li %NewRegist4 , 1
+	mul %NewRegist3, %NewRegist3, %NewRegist4
+	add %7, %6, %NewRegist3
+	mv %8 , %7
+	mv %9 , %8
+	sw %9 , -8(Initialsp)
+	beqz zero,newExpr3.Finish2
 
-newExpr1.Finish2:
-	lw %18 , -12(Initialsp)
-	sw %18 , 0(%5)
-	li %NewRegist8 , 0
-	sw %NewRegist8 , -16(Initialsp)
+newExpr3.Finish2:
+	lw %10 , -8(Initialsp)
+	la %NewRegist5 , c
+	sw %10 , 0(%NewRegist5)
+	li %NewRegist6 , 0
+	la %NewRegist7 , i
+	sw %NewRegist6 , 0(%NewRegist7)
 	beqz zero,ForCond22
 
 ForCond22:
-	lw %19 , -16(Initialsp)
-	lw %20 , -8(Initialsp)
-	mv %21 , %20
-	li %NewRegist9 , 4
-	li %NewRegist10 , -1
-	mul %NewRegist9, %NewRegist9, %NewRegist10
-	add %22, %21, %NewRegist9
-	lw %23 , 0(%22)
-	slt %24, %19, %23
-	bnez %24,ForLoop22
-	beqz %24,ForFinish22
+	la %11 , i
+	lw %11 , 0(%11)
+	lw %12 , -4(Initialsp)
+	slt %13, %11, %12
+	bnez %13,ForLoop22
+	beqz %13,ForFinish22
 
 ForLoop22:
-	lw %25 , -4(Initialsp)
-	addi %26, %25, 0
-	lw %27 , 0(%26)
-	lw %28 , -16(Initialsp)
-	li %NewRegist11 , 4
-	mul %NewRegist11, %NewRegist11, %28
-	add %29, %27, %NewRegist11
-	lw %30 , 0(%29)
-	lw %31 , -8(Initialsp)
-	lw %32 , -16(Initialsp)
+	la %14 , c
+	lw %14 , 0(%14)
+	la %15 , i
+	lw %15 , 0(%15)
+	li %NewRegist8 , 4
+	mul %NewRegist8, %NewRegist8, %15
+	add %16, %14, %NewRegist8
+	lw %17 , 0(%16)
+	lw %18 , -4(Initialsp)
+	beqz zero,newExpr4.dep0.Initial2
+
+newExpr4.dep0.Initial2:
+	li %NewRegist9 , 32
+	mul %19, %18, %NewRegist9
+	li %NewRegist10 , 32
+	add %20, %19, %NewRegist10
+	li %NewRegist11 , 8
+	div %21, %20, %NewRegist11
+	mv a0 , %21
+	call malloc
+	mv %22 , a0
+	mv %23 , %22
+	sw %18 , 0(%23)
 	li %NewRegist12 , 4
-	mul %NewRegist12, %NewRegist12, %32
-	add %33, %31, %NewRegist12
+	li %NewRegist13 , 1
+	mul %NewRegist12, %NewRegist12, %NewRegist13
+	add %24, %23, %NewRegist12
+	mv %25 , %24
+	mv %26 , %25
+	sw %26 , -12(Initialsp)
+	beqz zero,newExpr4.Finish2
+
+newExpr4.Finish2:
+	lw %27 , -12(Initialsp)
+	sw %27 , 0(%16)
+	li %NewRegist14 , 0
+	la %NewRegist15 , j
+	sw %NewRegist14 , 0(%NewRegist15)
+	beqz zero,ForCond32
+
+ForCond32:
+	la %28 , j
+	lw %28 , 0(%28)
+	lw %29 , -4(Initialsp)
+	slt %30, %28, %29
+	bnez %30,ForLoop32
+	beqz %30,ForFinish32
+
+ForLoop32:
+	la %31 , c
+	lw %31 , 0(%31)
+	la %32 , i
+	lw %32 , 0(%32)
+	li %NewRegist16 , 4
+	mul %NewRegist16, %NewRegist16, %32
+	add %33, %31, %NewRegist16
 	lw %34 , 0(%33)
-	sw %34 , 0(%29)
+	la %35 , j
+	lw %35 , 0(%35)
+	li %NewRegist17 , 4
+	mul %NewRegist17, %NewRegist17, %35
+	add %36, %34, %NewRegist17
+	lw %37 , 0(%36)
+	li %NewRegist18 , 0
+	sw %NewRegist18 , 0(%36)
+	beqz zero,ForEnd32
+
+ForEnd32:
+	la %38 , j
+	lw %38 , 0(%38)
+	li %NewRegist19 , 1
+	add %39, %38, %NewRegist19
+	la %NewRegist20 , j
+	sw %39 , 0(%NewRegist20)
+	beqz zero,ForCond32
+
+ForFinish32:
 	beqz zero,ForEnd22
 
 ForEnd22:
-	lw %35 , -16(Initialsp)
-	li %NewRegist13 , 1
-	add %36, %35, %NewRegist13
-	sw %36 , -16(Initialsp)
+	la %40 , i
+	lw %40 , 0(%40)
+	li %NewRegist21 , 1
+	add %41, %40, %NewRegist21
+	la %NewRegist22 , i
+	sw %41 , 0(%NewRegist22)
 	beqz zero,ForCond22
 
 ForFinish22:
@@ -306,723 +316,620 @@ ForFinish22:
 	ret
 
 
-    .globl  _struct_vector_getDim
+    .globl  build
     .p2align    2
-_struct_vector_getDim:
+build:
 	mv s0 , sp
 	sw a0 , -4(sp)
+	sw a1 , -8(sp)
 	addi sp,sp,0
 	mv %raAddr , ra
 	j entry3
 entry3:
-	lw %1 , -4(Initialsp)
-	addi %2, %1, 0
-	lw %3 , 0(%2)
-	li %NewRegist0 , 0
-	xor %4, %3, %NewRegist0
-	seqz %4 , %4
-	bnez %4,IFTrue33
-	beqz %4,IFFalse33
+	li %NewRegist0 , 1
+	la %NewRegist1 , i
+	sw %NewRegist0 , 0(%NewRegist1)
+	beqz zero,ForCond43
 
-IFTrue33:
-	li %NewRegist1 , 0
-	sw %NewRegist1 , -8(Initialsp)
-	lw %5 , -8(Initialsp)
-	mv a0 , %5
-	mv ra , %raAddr
-	addi sp,sp,0
-	ret
+ForCond43:
+	la %2 , i
+	lw %2 , 0(%2)
+	li %NewRegist2 , 49
+	slt %3, %NewRegist2, %2
+	xori %3, %3, 1
+	bnez %3,ForLoop43
+	beqz %3,ForFinish43
 
-IFFalse33:
-	beqz zero,IFFinish33
+ForLoop43:
+	li %NewRegist3 , 50
+	la %NewRegist4 , j
+	sw %NewRegist3 , 0(%NewRegist4)
+	beqz zero,ForCond53
 
-IFFinish33:
-	lw %6 , -4(Initialsp)
-	addi %7, %6, 0
-	lw %8 , 0(%7)
-	mv %9 , %8
-	li %NewRegist2 , 4
-	li %NewRegist3 , -1
-	mul %NewRegist2, %NewRegist2, %NewRegist3
-	add %10, %9, %NewRegist2
-	lw %11 , 0(%10)
-	sw %11 , -8(Initialsp)
-	lw %12 , -8(Initialsp)
-	mv a0 , %12
-	mv ra , %raAddr
-	addi sp,sp,0
-	ret
-
-
-    .globl  _struct_vector_dot
-    .p2align    2
-_struct_vector_dot:
-	mv s0 , sp
-	sw a0 , -4(sp)
-	sw a1 , -8(sp)
-	addi sp,sp,0
-	mv %raAddr , ra
-	j entry4
-entry4:
-	li %NewRegist0 , 0
-	sw %NewRegist0 , -16(Initialsp)
-	li %NewRegist1 , 0
-	sw %NewRegist1 , -20(Initialsp)
-	beqz zero,ForCond34
-
-ForCond34:
-	lw %2 , -16(Initialsp)
-	lw %3 , -4(Initialsp)
-	mv a0 , %3
-	call _struct_vector_getDim
-	mv %4 , a0
-	slt %5, %2, %4
-	bnez %5,ForLoop34
-	beqz %5,ForFinish34
-
-ForLoop34:
-	lw %6 , -4(Initialsp)
-	addi %7, %6, 0
-	lw %8 , 0(%7)
-	lw %9 , -16(Initialsp)
-	li %NewRegist2 , 4
-	mul %NewRegist2, %NewRegist2, %9
-	add %10, %8, %NewRegist2
-	lw %11 , 0(%10)
-	lw %12 , -8(Initialsp)
-	addi %13, %12, 0
-	lw %14 , 0(%13)
-	lw %15 , -16(Initialsp)
-	li %NewRegist3 , 4
-	mul %NewRegist3, %NewRegist3, %15
-	add %16, %14, %NewRegist3
-	lw %17 , 0(%16)
-	mul %18, %11, %17
-	sw %18 , -20(Initialsp)
-	lw %19 , -16(Initialsp)
-	li %NewRegist4 , 1
-	add %20, %19, %NewRegist4
-	sw %20 , -16(Initialsp)
-	beqz zero,ForEnd34
-
-ForEnd34:
-	beqz zero,ForCond34
-
-ForFinish34:
-	lw %21 , -20(Initialsp)
-	sw %21 , -12(Initialsp)
-	lw %22 , -12(Initialsp)
-	mv a0 , %22
-	mv ra , %raAddr
-	addi sp,sp,0
-	ret
-
-
-    .globl  _struct_vector_scalarInPlaceMultiply
-    .p2align    2
-_struct_vector_scalarInPlaceMultiply:
-	mv s0 , sp
-	sw a0 , -4(sp)
-	sw a1 , -8(sp)
-	addi sp,sp,0
-	mv %raAddr , ra
-	j entry5
-entry5:
-	lw %2 , -4(Initialsp)
-	addi %3, %2, 0
-	lw %4 , 0(%3)
-	li %NewRegist0 , 0
-	xor %5, %4, %NewRegist0
-	seqz %5 , %5
-	bnez %5,IFTrue45
-	beqz %5,IFFalse45
-
-IFTrue45:
-	li %NewRegist1 , 0
-	sw %NewRegist1 , -12(Initialsp)
-	lw %6 , -12(Initialsp)
-	mv a0 , %6
-	mv ra , %raAddr
-	addi sp,sp,0
-	ret
-
-IFFalse45:
-	beqz zero,IFFinish45
-
-IFFinish45:
-	li %NewRegist2 , 0
-	sw %NewRegist2 , -16(Initialsp)
-	beqz zero,ForCond45
-
-ForCond45:
-	lw %7 , -16(Initialsp)
-	lw %8 , -4(Initialsp)
-	mv a0 , %8
-	call _struct_vector_getDim
-	mv %9 , a0
-	slt %10, %7, %9
-	bnez %10,ForLoop45
-	beqz %10,ForFinish45
-
-ForLoop45:
-	lw %11 , -4(Initialsp)
-	addi %12, %11, 0
-	lw %13 , 0(%12)
-	lw %14 , -16(Initialsp)
-	li %NewRegist3 , 4
-	mul %NewRegist3, %NewRegist3, %14
-	add %15, %13, %NewRegist3
-	lw %16 , 0(%15)
-	lw %17 , -8(Initialsp)
-	lw %18 , -4(Initialsp)
-	addi %19, %18, 0
-	lw %20 , 0(%19)
-	lw %21 , -16(Initialsp)
-	li %NewRegist4 , 4
-	mul %NewRegist4, %NewRegist4, %21
-	add %22, %20, %NewRegist4
-	lw %23 , 0(%22)
-	mul %24, %17, %23
-	sw %24 , 0(%15)
-	beqz zero,ForEnd45
-
-ForEnd45:
-	lw %25 , -16(Initialsp)
-	li %NewRegist5 , 1
-	add %26, %25, %NewRegist5
-	sw %26 , -16(Initialsp)
-	beqz zero,ForCond45
-
-ForFinish45:
-	lw %27 , -4(Initialsp)
-	sw %27 , -12(Initialsp)
-	lw %28 , -12(Initialsp)
-	mv a0 , %28
-	mv ra , %raAddr
-	addi sp,sp,0
-	ret
-
-
-    .globl  _struct_vector_add
-    .p2align    2
-_struct_vector_add:
-	mv s0 , sp
-	sw a0 , -4(sp)
-	sw a1 , -8(sp)
-	addi sp,sp,0
-	mv %raAddr , ra
-	j entry6
-entry6:
-	lw %2 , -4(Initialsp)
-	mv a0 , %2
-	call _struct_vector_getDim
-	mv %3 , a0
-	lw %4 , -8(Initialsp)
-	mv a0 , %4
-	call _struct_vector_getDim
-	mv %5 , a0
-	xor %6, %3, %5
-	snez %6 , %6
-	sw %6 , -16(Initialsp)
-	bnez %6,Binary0.Finish6
-	beqz %6,Binary0.Right6
-
-Binary0.Right6:
-	lw %7 , -4(Initialsp)
-	mv a0 , %7
-	call _struct_vector_getDim
-	mv %8 , a0
-	li %NewRegist0 , 0
-	xor %9, %8, %NewRegist0
-	seqz %9 , %9
-	sw %9 , -16(Initialsp)
-	beqz zero,Binary0.Finish6
-
-Binary0.Finish6:
-	lw %10 , -16(Initialsp)
-	bnez %10,IFTrue56
-	beqz %10,IFFalse56
-
-IFTrue56:
-	li %NewRegist1 , 0
-	sw %NewRegist1 , -12(Initialsp)
-	lw %11 , -12(Initialsp)
-	mv a0 , %11
-	mv ra , %raAddr
-	addi sp,sp,0
-	ret
-
-IFFalse56:
-	beqz zero,IFFinish56
-
-IFFinish56:
-	li a0 , 4
-	call malloc
-	mv %12 , a0
-	mv %13 , %12
-	mv a0 , %13
-	call _struct_vector_vector
-	sw %13 , -20(Initialsp)
-	lw %14 , -20(Initialsp)
-	addi %15, %14, 0
-	lw %16 , 0(%15)
-	lw %17 , -4(Initialsp)
-	mv a0 , %17
-	call _struct_vector_getDim
-	mv %18 , a0
-	beqz zero,newExpr2.dep0.Initial6
-
-newExpr2.dep0.Initial6:
-	li %NewRegist2 , 32
-	mul %19, %18, %NewRegist2
-	li %NewRegist3 , 32
-	add %20, %19, %NewRegist3
-	li %NewRegist4 , 8
-	div %21, %20, %NewRegist4
-	mv a0 , %21
-	call malloc
-	mv %22 , a0
-	mv %23 , %22
-	sw %18 , 0(%23)
-	li %NewRegist5 , 4
+ForCond53:
+	la %4 , j
+	lw %4 , 0(%4)
+	la %5 , i
+	lw %5 , 0(%5)
+	li %NewRegist5 , 98
+	sub %6, %NewRegist5, %5
 	li %NewRegist6 , 1
-	mul %NewRegist5, %NewRegist5, %NewRegist6
-	add %24, %23, %NewRegist5
-	mv %25 , %24
-	mv %26 , %25
-	sw %26 , -28(Initialsp)
-	beqz zero,newExpr2.Finish6
+	add %7, %6, %NewRegist6
+	slt %8, %7, %4
+	xori %8, %8, 1
+	bnez %8,ForLoop53
+	beqz %8,ForFinish53
 
-newExpr2.Finish6:
-	lw %27 , -28(Initialsp)
-	sw %27 , 0(%15)
-	li %NewRegist7 , 0
-	sw %NewRegist7 , -24(Initialsp)
-	beqz zero,ForCond56
-
-ForCond56:
-	lw %28 , -24(Initialsp)
-	lw %29 , -4(Initialsp)
-	mv a0 , %29
-	call _struct_vector_getDim
-	mv %30 , a0
-	slt %31, %28, %30
-	bnez %31,ForLoop56
-	beqz %31,ForFinish56
-
-ForLoop56:
-	lw %32 , -20(Initialsp)
-	addi %33, %32, 0
-	lw %34 , 0(%33)
-	lw %35 , -24(Initialsp)
+ForLoop53:
+	la %9 , c
+	lw %9 , 0(%9)
+	la %10 , i
+	lw %10 , 0(%10)
+	li %NewRegist7 , 4
+	mul %NewRegist7, %NewRegist7, %10
+	add %11, %9, %NewRegist7
+	lw %12 , 0(%11)
+	la %13 , j
+	lw %13 , 0(%13)
 	li %NewRegist8 , 4
-	mul %NewRegist8, %NewRegist8, %35
-	add %36, %34, %NewRegist8
-	lw %37 , 0(%36)
-	lw %38 , -4(Initialsp)
-	addi %39, %38, 0
-	lw %40 , 0(%39)
-	lw %41 , -24(Initialsp)
-	li %NewRegist9 , 4
-	mul %NewRegist9, %NewRegist9, %41
-	add %42, %40, %NewRegist9
-	lw %43 , 0(%42)
-	lw %44 , -8(Initialsp)
-	addi %45, %44, 0
-	lw %46 , 0(%45)
-	lw %47 , -24(Initialsp)
-	li %NewRegist10 , 4
-	mul %NewRegist10, %NewRegist10, %47
-	add %48, %46, %NewRegist10
-	lw %49 , 0(%48)
-	add %50, %43, %49
-	sw %50 , 0(%36)
-	beqz zero,ForEnd56
+	mul %NewRegist8, %NewRegist8, %13
+	add %14, %12, %NewRegist8
+	lw %15 , 0(%14)
+	li %NewRegist9 , 1
+	sw %NewRegist9 , 0(%14)
+	beqz zero,ForEnd53
 
-ForEnd56:
-	lw %51 , -24(Initialsp)
-	li %NewRegist11 , 1
-	add %52, %51, %NewRegist11
-	sw %52 , -24(Initialsp)
-	beqz zero,ForCond56
+ForEnd53:
+	la %16 , j
+	lw %16 , 0(%16)
+	li %NewRegist10 , 1
+	add %17, %16, %NewRegist10
+	la %NewRegist11 , j
+	sw %17 , 0(%NewRegist11)
+	beqz zero,ForCond53
 
-ForFinish56:
-	lw %53 , -20(Initialsp)
-	sw %53 , -12(Initialsp)
-	lw %54 , -12(Initialsp)
-	mv a0 , %54
+ForFinish53:
+	beqz zero,ForEnd43
+
+ForEnd43:
+	la %18 , i
+	lw %18 , 0(%18)
+	li %NewRegist12 , 1
+	add %19, %18, %NewRegist12
+	la %NewRegist13 , i
+	sw %19 , 0(%NewRegist13)
+	beqz zero,ForCond43
+
+ForFinish43:
+	li %NewRegist14 , 1
+	la %NewRegist15 , i
+	sw %NewRegist14 , 0(%NewRegist15)
+	beqz zero,ForCond63
+
+ForCond63:
+	la %20 , i
+	lw %20 , 0(%20)
+	li %NewRegist16 , 49
+	slt %21, %NewRegist16, %20
+	xori %21, %21, 1
+	bnez %21,ForLoop63
+	beqz %21,ForFinish63
+
+ForLoop63:
+	la %22 , c
+	lw %22 , 0(%22)
+	lw %23 , -4(Initialsp)
+	li %NewRegist17 , 4
+	mul %NewRegist17, %NewRegist17, %23
+	add %24, %22, %NewRegist17
+	lw %25 , 0(%24)
+	la %26 , i
+	lw %26 , 0(%26)
+	li %NewRegist18 , 4
+	mul %NewRegist18, %NewRegist18, %26
+	add %27, %25, %NewRegist18
+	lw %28 , 0(%27)
+	li %NewRegist19 , 1
+	sw %NewRegist19 , 0(%27)
+	beqz zero,ForEnd63
+
+ForEnd63:
+	la %29 , i
+	lw %29 , 0(%29)
+	li %NewRegist20 , 1
+	add %30, %29, %NewRegist20
+	la %NewRegist21 , i
+	sw %30 , 0(%NewRegist21)
+	beqz zero,ForCond63
+
+ForFinish63:
+	li %NewRegist22 , 50
+	la %NewRegist23 , i
+	sw %NewRegist22 , 0(%NewRegist23)
+	beqz zero,ForCond73
+
+ForCond73:
+	la %31 , i
+	lw %31 , 0(%31)
+	li %NewRegist24 , 98
+	slt %32, %NewRegist24, %31
+	xori %32, %32, 1
+	bnez %32,ForLoop73
+	beqz %32,ForFinish73
+
+ForLoop73:
+	la %33 , c
+	lw %33 , 0(%33)
+	la %34 , i
+	lw %34 , 0(%34)
+	li %NewRegist25 , 4
+	mul %NewRegist25, %NewRegist25, %34
+	add %35, %33, %NewRegist25
+	lw %36 , 0(%35)
+	lw %37 , -8(Initialsp)
+	li %NewRegist26 , 4
+	mul %NewRegist26, %NewRegist26, %37
+	add %38, %36, %NewRegist26
+	lw %39 , 0(%38)
+	li %NewRegist27 , 1
+	sw %NewRegist27 , 0(%38)
+	beqz zero,ForEnd73
+
+ForEnd73:
+	la %40 , i
+	lw %40 , 0(%40)
+	li %NewRegist28 , 1
+	add %41, %40, %NewRegist28
+	la %NewRegist29 , i
+	sw %41 , 0(%NewRegist29)
+	beqz zero,ForCond73
+
+ForFinish73:
+	li %NewRegist30 , 0
+	sw %NewRegist30 , -12(Initialsp)
+	lw %42 , -12(Initialsp)
+	mv a0 , %42
 	mv ra , %raAddr
 	addi sp,sp,0
 	ret
 
 
-    .globl  _struct_vector_set
+    .globl  find
     .p2align    2
-_struct_vector_set:
+find:
 	mv s0 , sp
 	sw a0 , -4(sp)
 	sw a1 , -8(sp)
 	sw a2 , -12(sp)
 	addi sp,sp,0
 	mv %raAddr , ra
-	j entry7
-entry7:
-	lw %3 , -4(Initialsp)
-	mv a0 , %3
-	call _struct_vector_getDim
-	mv %4 , a0
-	lw %5 , -8(Initialsp)
-	slt %6, %4, %5
-	bnez %6,IFTrue67
-	beqz %6,IFFalse67
-
-IFTrue67:
+	j entry4
+entry4:
 	li %NewRegist0 , 0
-	sw %NewRegist0 , -16(Initialsp)
-	lw %7 , -16(Initialsp)
-	mv a0 , %7
-	mv ra , %raAddr
-	addi sp,sp,0
-	ret
-
-IFFalse67:
-	beqz zero,IFFinish67
-
-IFFinish67:
-	lw %8 , -4(Initialsp)
-	addi %9, %8, 0
-	lw %10 , 0(%9)
-	lw %11 , -8(Initialsp)
-	li %NewRegist1 , 4
-	mul %NewRegist1, %NewRegist1, %11
-	add %12, %10, %NewRegist1
-	lw %13 , 0(%12)
-	lw %14 , -12(Initialsp)
-	sw %14 , 0(%12)
+	la %NewRegist1 , open
+	sw %NewRegist0 , 0(%NewRegist1)
 	li %NewRegist2 , 1
-	sw %NewRegist2 , -16(Initialsp)
-	lw %15 , -16(Initialsp)
-	mv a0 , %15
-	mv ra , %raAddr
-	addi sp,sp,0
-	ret
+	la %NewRegist3 , closed
+	sw %NewRegist2 , 0(%NewRegist3)
+	li %NewRegist4 , 1
+	la %NewRegist5 , i
+	sw %NewRegist4 , 0(%NewRegist5)
+	beqz zero,ForCond84
 
+ForCond84:
+	la %3 , i
+	lw %3 , 0(%3)
+	lw %4 , -4(Initialsp)
+	slt %5, %4, %3
+	xori %5, %5, 1
+	bnez %5,ForLoop84
+	beqz %5,ForFinish84
 
-    .globl  _struct_vector_tostring
-    .p2align    2
-_struct_vector_tostring:
-	mv s0 , sp
-	sw a0 , -4(sp)
-	addi sp,sp,0
-	mv %raAddr , ra
-	j entry8
-entry8:
-	la %1 , .Str6
-	sw %1 , -12(Initialsp)
-	lw %2 , -4(Initialsp)
-	mv a0 , %2
-	call _struct_vector_getDim
-	mv %3 , a0
-	li %NewRegist0 , 0
-	slt %4, %NewRegist0, %3
-	bnez %4,IFTrue78
-	beqz %4,IFFalse78
+ForLoop84:
+	la %6 , visit
+	lw %6 , 0(%6)
+	la %7 , i
+	lw %7 , 0(%7)
+	li %NewRegist6 , 4
+	mul %NewRegist6, %NewRegist6, %7
+	add %8, %6, %NewRegist6
+	lw %9 , 0(%8)
+	li %NewRegist7 , 0
+	sw %NewRegist7 , 0(%8)
+	beqz zero,ForEnd84
 
-IFTrue78:
-	lw %5 , -12(Initialsp)
-	lw %6 , -4(Initialsp)
-	addi %7, %6, 0
-	lw %8 , 0(%7)
-	li %NewRegist1 , 4
-	li %NewRegist2 , 0
-	mul %NewRegist1, %NewRegist1, %NewRegist2
-	add %9, %8, %NewRegist1
-	lw %10 , 0(%9)
-	mv a0 , %10
-	call toString
-	mv %11 , a0
-	mv a0 , %5
-	mv a1 , %11
-	call _struct_string_AddString
-	mv %12 , a0
-	sw %12 , -12(Initialsp)
-	beqz zero,IFFinish78
-
-IFFalse78:
-	beqz zero,IFFinish78
-
-IFFinish78:
-	li %NewRegist3 , 1
-	sw %NewRegist3 , -16(Initialsp)
-	beqz zero,ForCond68
-
-ForCond68:
-	lw %13 , -16(Initialsp)
-	lw %14 , -4(Initialsp)
-	mv a0 , %14
-	call _struct_vector_getDim
-	mv %15 , a0
-	slt %16, %13, %15
-	bnez %16,ForLoop68
-	beqz %16,ForFinish68
-
-ForLoop68:
-	lw %17 , -12(Initialsp)
-	la %18 , .Str7
-	mv a0 , %17
-	mv a1 , %18
-	call _struct_string_AddString
-	mv %19 , a0
-	lw %20 , -4(Initialsp)
-	addi %21, %20, 0
-	lw %22 , 0(%21)
-	lw %23 , -16(Initialsp)
-	li %NewRegist4 , 4
-	mul %NewRegist4, %NewRegist4, %23
-	add %24, %22, %NewRegist4
-	lw %25 , 0(%24)
-	mv a0 , %25
-	call toString
-	mv %26 , a0
-	mv a0 , %19
-	mv a1 , %26
-	call _struct_string_AddString
-	mv %27 , a0
-	sw %27 , -12(Initialsp)
-	beqz zero,ForEnd68
-
-ForEnd68:
-	lw %28 , -16(Initialsp)
-	li %NewRegist5 , 1
-	add %29, %28, %NewRegist5
-	sw %29 , -16(Initialsp)
-	beqz zero,ForCond68
-
-ForFinish68:
-	lw %30 , -12(Initialsp)
-	la %31 , .Str8
-	mv a0 , %30
-	mv a1 , %31
-	call _struct_string_AddString
-	mv %32 , a0
-	sw %32 , -12(Initialsp)
-	lw %33 , -12(Initialsp)
-	sw %33 , -8(Initialsp)
-	lw %34 , -8(Initialsp)
-	mv a0 , %34
-	mv ra , %raAddr
-	addi sp,sp,0
-	ret
-
-
-    .globl  _struct_vector_copy
-    .p2align    2
-_struct_vector_copy:
-	mv s0 , sp
-	sw a0 , -4(sp)
-	sw a1 , -8(sp)
-	addi sp,sp,0
-	mv %raAddr , ra
-	j entry9
-entry9:
-	lw %2 , -8(Initialsp)
-	li %NewRegist0 , 0
-	xor %3, %2, %NewRegist0
-	seqz %3 , %3
-	bnez %3,IFTrue89
-	beqz %3,IFFalse89
-
-IFTrue89:
-	li %NewRegist1 , 0
-	sw %NewRegist1 , -12(Initialsp)
-	lw %4 , -12(Initialsp)
-	mv a0 , %4
-	mv ra , %raAddr
-	addi sp,sp,0
-	ret
-
-IFFalse89:
-	beqz zero,IFFinish89
-
-IFFinish89:
-	lw %5 , -8(Initialsp)
-	mv a0 , %5
-	call _struct_vector_getDim
-	mv %6 , a0
-	li %NewRegist2 , 0
-	xor %7, %6, %NewRegist2
-	seqz %7 , %7
-	bnez %7,IFTrue99
-	beqz %7,IFFalse99
-
-IFTrue99:
-	lw %8 , -4(Initialsp)
-	addi %9, %8, 0
-	li %NewRegist3 , 0
-	sw %NewRegist3 , 0(%9)
-	beqz zero,IFFinish99
-
-IFFalse99:
-	lw %10 , -4(Initialsp)
-	addi %11, %10, 0
-	lw %12 , -8(Initialsp)
-	mv a0 , %12
-	call _struct_vector_getDim
-	mv %13 , a0
-	beqz zero,newExpr3.dep0.Initial9
-
-newExpr3.dep0.Initial9:
-	li %NewRegist4 , 32
-	mul %14, %13, %NewRegist4
-	li %NewRegist5 , 32
-	add %15, %14, %NewRegist5
-	li %NewRegist6 , 8
-	div %16, %15, %NewRegist6
-	mv a0 , %16
-	call malloc
-	mv %17 , a0
-	mv %18 , %17
-	sw %13 , 0(%18)
-	li %NewRegist7 , 4
+ForEnd84:
+	la %10 , i
+	lw %10 , 0(%10)
 	li %NewRegist8 , 1
-	mul %NewRegist7, %NewRegist7, %NewRegist8
-	add %19, %18, %NewRegist7
-	mv %20 , %19
-	mv %21 , %20
-	sw %21 , -16(Initialsp)
-	beqz zero,newExpr3.Finish9
+	add %11, %10, %NewRegist8
+	la %NewRegist9 , i
+	sw %11 , 0(%NewRegist9)
+	beqz zero,ForCond84
 
-newExpr3.Finish9:
-	lw %22 , -16(Initialsp)
-	sw %22 , 0(%11)
-	li %NewRegist9 , 0
-	sw %NewRegist9 , -20(Initialsp)
-	beqz zero,ForCond79
-
-ForCond79:
-	lw %23 , -20(Initialsp)
-	lw %24 , -4(Initialsp)
-	mv a0 , %24
-	call _struct_vector_getDim
-	mv %25 , a0
-	slt %26, %23, %25
-	bnez %26,ForLoop79
-	beqz %26,ForFinish79
-
-ForLoop79:
-	lw %27 , -4(Initialsp)
-	addi %28, %27, 0
-	lw %29 , 0(%28)
-	lw %30 , -20(Initialsp)
+ForFinish84:
+	la %12 , f
+	lw %12 , 0(%12)
 	li %NewRegist10 , 4
-	mul %NewRegist10, %NewRegist10, %30
-	add %31, %29, %NewRegist10
-	lw %32 , 0(%31)
-	lw %33 , -8(Initialsp)
-	addi %34, %33, 0
-	lw %35 , 0(%34)
-	lw %36 , -20(Initialsp)
-	li %NewRegist11 , 4
-	mul %NewRegist11, %NewRegist11, %36
-	add %37, %35, %NewRegist11
-	lw %38 , 0(%37)
-	sw %38 , 0(%31)
-	beqz zero,ForEnd79
-
-ForEnd79:
-	lw %39 , -20(Initialsp)
-	li %NewRegist12 , 1
-	add %40, %39, %NewRegist12
-	sw %40 , -20(Initialsp)
-	beqz zero,ForCond79
-
-ForFinish79:
-	beqz zero,IFFinish99
-
-IFFinish99:
+	li %NewRegist11 , 1
+	mul %NewRegist10, %NewRegist10, %NewRegist11
+	add %13, %12, %NewRegist10
+	lw %14 , 0(%13)
+	lw %15 , -8(Initialsp)
+	sw %15 , 0(%13)
+	la %16 , visit
+	lw %16 , 0(%16)
+	lw %17 , -8(Initialsp)
+	li %NewRegist12 , 4
+	mul %NewRegist12, %NewRegist12, %17
+	add %18, %16, %NewRegist12
+	lw %19 , 0(%18)
 	li %NewRegist13 , 1
-	sw %NewRegist13 , -12(Initialsp)
-	lw %41 , -12(Initialsp)
-	mv a0 , %41
+	sw %NewRegist13 , 0(%18)
+	la %20 , pre
+	lw %20 , 0(%20)
+	lw %21 , -8(Initialsp)
+	li %NewRegist14 , 4
+	mul %NewRegist14, %NewRegist14, %21
+	add %22, %20, %NewRegist14
+	lw %23 , 0(%22)
+	li %NewRegist15 , 0
+	sw %NewRegist15 , 0(%22)
+	li %NewRegist16 , 0
+	sw %NewRegist16 , -12(Initialsp)
+	beqz zero,ForCond94
+
+ForCond94:
+	la %24 , open
+	lw %24 , 0(%24)
+	la %25 , closed
+	lw %25 , 0(%25)
+	slt %26, %24, %25
+	sw %26 , -20(Initialsp)
+	bnez %26,Binary0.Right4
+	beqz %26,Binary0.Finish4
+
+Binary0.Right4:
+	lw %27 , -12(Initialsp)
+	li %NewRegist17 , 0
+	xor %28, %27, %NewRegist17
+	seqz %28 , %28
+	sw %28 , -20(Initialsp)
+	beqz zero,Binary0.Finish4
+
+Binary0.Finish4:
+	lw %29 , -20(Initialsp)
+	bnez %29,ForLoop94
+	beqz %29,ForFinish94
+
+ForLoop94:
+	la %30 , open
+	lw %30 , 0(%30)
+	li %NewRegist18 , 1
+	add %31, %30, %NewRegist18
+	la %NewRegist19 , open
+	sw %31 , 0(%NewRegist19)
+	la %32 , f
+	lw %32 , 0(%32)
+	la %33 , open
+	lw %33 , 0(%33)
+	li %NewRegist20 , 4
+	mul %NewRegist20, %NewRegist20, %33
+	add %34, %32, %NewRegist20
+	lw %35 , 0(%34)
+	la %NewRegist21 , i
+	sw %35 , 0(%NewRegist21)
+	li %NewRegist22 , 1
+	la %NewRegist23 , j
+	sw %NewRegist22 , 0(%NewRegist23)
+	beqz zero,ForCond104
+
+ForCond104:
+	la %36 , j
+	lw %36 , 0(%36)
+	lw %37 , -4(Initialsp)
+	slt %38, %37, %36
+	xori %38, %38, 1
+	bnez %38,ForLoop104
+	beqz %38,ForFinish104
+
+ForLoop104:
+	la %39 , c
+	lw %39 , 0(%39)
+	la %40 , i
+	lw %40 , 0(%40)
+	li %NewRegist24 , 4
+	mul %NewRegist24, %NewRegist24, %40
+	add %41, %39, %NewRegist24
+	lw %42 , 0(%41)
+	la %43 , j
+	lw %43 , 0(%43)
+	li %NewRegist25 , 4
+	mul %NewRegist25, %NewRegist25, %43
+	add %44, %42, %NewRegist25
+	lw %45 , 0(%44)
+	li %NewRegist26 , 0
+	slt %46, %NewRegist26, %45
+	sw %46 , -24(Initialsp)
+	bnez %46,Binary1.Right4
+	beqz %46,Binary1.Finish4
+
+Binary1.Right4:
+	la %47 , visit
+	lw %47 , 0(%47)
+	la %48 , j
+	lw %48 , 0(%48)
+	li %NewRegist27 , 4
+	mul %NewRegist27, %NewRegist27, %48
+	add %49, %47, %NewRegist27
+	lw %50 , 0(%49)
+	li %NewRegist28 , 0
+	xor %51, %50, %NewRegist28
+	seqz %51 , %51
+	sw %51 , -24(Initialsp)
+	beqz zero,Binary1.Finish4
+
+Binary1.Finish4:
+	lw %52 , -24(Initialsp)
+	bnez %52,IFTrue14
+	beqz %52,IFFalse14
+
+IFTrue14:
+	la %53 , visit
+	lw %53 , 0(%53)
+	la %54 , j
+	lw %54 , 0(%54)
+	li %NewRegist29 , 4
+	mul %NewRegist29, %NewRegist29, %54
+	add %55, %53, %NewRegist29
+	lw %56 , 0(%55)
+	li %NewRegist30 , 1
+	sw %NewRegist30 , 0(%55)
+	la %57 , closed
+	lw %57 , 0(%57)
+	li %NewRegist31 , 1
+	add %58, %57, %NewRegist31
+	la %NewRegist32 , closed
+	sw %58 , 0(%NewRegist32)
+	la %59 , f
+	lw %59 , 0(%59)
+	la %60 , closed
+	lw %60 , 0(%60)
+	li %NewRegist33 , 4
+	mul %NewRegist33, %NewRegist33, %60
+	add %61, %59, %NewRegist33
+	lw %62 , 0(%61)
+	la %63 , j
+	lw %63 , 0(%63)
+	sw %63 , 0(%61)
+	la %64 , pre
+	lw %64 , 0(%64)
+	la %65 , j
+	lw %65 , 0(%65)
+	li %NewRegist34 , 4
+	mul %NewRegist34, %NewRegist34, %65
+	add %66, %64, %NewRegist34
+	lw %67 , 0(%66)
+	la %68 , i
+	lw %68 , 0(%68)
+	sw %68 , 0(%66)
+	la %69 , closed
+	lw %69 , 0(%69)
+	lw %70 , -4(Initialsp)
+	xor %71, %69, %70
+	seqz %71 , %71
+	bnez %71,IFTrue24
+	beqz %71,IFFalse24
+
+IFTrue24:
+	li %NewRegist35 , 1
+	sw %NewRegist35 , -12(Initialsp)
+	beqz zero,IFFinish24
+
+IFFalse24:
+	beqz zero,IFFinish24
+
+IFFinish24:
+	beqz zero,IFFinish14
+
+IFFalse14:
+	beqz zero,IFFinish14
+
+IFFinish14:
+	beqz zero,ForEnd104
+
+ForEnd104:
+	la %72 , j
+	lw %72 , 0(%72)
+	li %NewRegist36 , 1
+	add %73, %72, %NewRegist36
+	la %NewRegist37 , j
+	sw %73 , 0(%NewRegist37)
+	beqz zero,ForCond104
+
+ForFinish104:
+	beqz zero,ForEnd94
+
+ForEnd94:
+	beqz zero,ForCond94
+
+ForFinish94:
+	lw %74 , -12(Initialsp)
+	sw %74 , -16(Initialsp)
+	lw %75 , -16(Initialsp)
+	mv a0 , %75
 	mv ra , %raAddr
 	addi sp,sp,0
 	ret
 
 
-    .globl  _struct_vector_vector
+    .globl  improve
     .p2align    2
-_struct_vector_vector:
+improve:
 	mv s0 , sp
 	sw a0 , -4(sp)
 	addi sp,sp,0
 	mv %raAddr , ra
-	j entry10
-entry10:
+	j entry5
+entry5:
+	lw %1 , -4(Initialsp)
+	la %NewRegist0 , i
+	sw %1 , 0(%NewRegist0)
+	la %2 , ans
+	lw %2 , 0(%2)
+	li %NewRegist1 , 1
+	add %3, %2, %NewRegist1
+	la %NewRegist2 , ans
+	sw %3 , 0(%NewRegist2)
+	beqz zero,ForCond115
+
+ForCond115:
+	la %4 , pre
+	lw %4 , 0(%4)
+	la %5 , i
+	lw %5 , 0(%5)
+	li %NewRegist3 , 4
+	mul %NewRegist3, %NewRegist3, %5
+	add %6, %4, %NewRegist3
+	lw %7 , 0(%6)
+	li %NewRegist4 , 0
+	slt %8, %NewRegist4, %7
+	bnez %8,ForLoop115
+	beqz %8,ForFinish115
+
+ForLoop115:
+	la %9 , pre
+	lw %9 , 0(%9)
+	la %10 , i
+	lw %10 , 0(%10)
+	li %NewRegist5 , 4
+	mul %NewRegist5, %NewRegist5, %10
+	add %11, %9, %NewRegist5
+	lw %12 , 0(%11)
+	la %NewRegist6 , j
+	sw %12 , 0(%NewRegist6)
+	la %13 , c
+	lw %13 , 0(%13)
+	la %14 , j
+	lw %14 , 0(%14)
+	li %NewRegist7 , 4
+	mul %NewRegist7, %NewRegist7, %14
+	add %15, %13, %NewRegist7
+	lw %16 , 0(%15)
+	la %17 , i
+	lw %17 , 0(%17)
+	li %NewRegist8 , 4
+	mul %NewRegist8, %NewRegist8, %17
+	add %18, %16, %NewRegist8
+	lw %19 , 0(%18)
+	li %NewRegist9 , 1
+	sub %20, %19, %NewRegist9
+	sw %20 , 0(%18)
+	la %21 , c
+	lw %21 , 0(%21)
+	la %22 , i
+	lw %22 , 0(%22)
+	li %NewRegist10 , 4
+	mul %NewRegist10, %NewRegist10, %22
+	add %23, %21, %NewRegist10
+	lw %24 , 0(%23)
+	la %25 , j
+	lw %25 , 0(%25)
+	li %NewRegist11 , 4
+	mul %NewRegist11, %NewRegist11, %25
+	add %26, %24, %NewRegist11
+	lw %27 , 0(%26)
+	li %NewRegist12 , 1
+	add %28, %27, %NewRegist12
+	sw %28 , 0(%26)
+	la %29 , j
+	lw %29 , 0(%29)
+	la %NewRegist13 , i
+	sw %29 , 0(%NewRegist13)
+	beqz zero,ForEnd115
+
+ForEnd115:
+	beqz zero,ForCond115
+
+ForFinish115:
+	li %NewRegist14 , 0
+	sw %NewRegist14 , -8(Initialsp)
+	lw %30 , -8(Initialsp)
+	mv a0 , %30
 	mv ra , %raAddr
 	addi sp,sp,0
 	ret
 
 
-	.type	.Str0,@object           # @.Str0
-	.section	.rodata,"a",@progbits
-	.globl	.Str0
-.Str0:
-	.asciz	"vector x: "
-	.size	.Str0, 11
+	.type	c,@object             # @c
+	.section	.sbss,"aw",@nobits
+	.globl	c
+	.p2align	2
+c:
+	.word	0
+	.size	c, 4
 
-	.type	.Str1,@object           # @.Str1
-	.section	.rodata,"a",@progbits
-	.globl	.Str1
-.Str1:
-	.asciz	"excited!"
-	.size	.Str1, 9
+	.type	ans,@object             # @ans
+	.section	.sbss,"aw",@nobits
+	.globl	ans
+	.p2align	2
+ans:
+	.word	0
+	.size	ans, 4
 
-	.type	.Str2,@object           # @.Str2
-	.section	.rodata,"a",@progbits
-	.globl	.Str2
-.Str2:
-	.asciz	"vector y: "
-	.size	.Str2, 11
+	.type	visit,@object             # @visit
+	.section	.sbss,"aw",@nobits
+	.globl	visit
+	.p2align	2
+visit:
+	.word	0
+	.size	visit, 4
 
-	.type	.Str3,@object           # @.Str3
-	.section	.rodata,"a",@progbits
-	.globl	.Str3
-.Str3:
-	.asciz	"x + y: "
-	.size	.Str3, 8
+	.type	pre,@object             # @pre
+	.section	.sbss,"aw",@nobits
+	.globl	pre
+	.p2align	2
+pre:
+	.word	0
+	.size	pre, 4
 
-	.type	.Str4,@object           # @.Str4
-	.section	.rodata,"a",@progbits
-	.globl	.Str4
-.Str4:
-	.asciz	"x * y: "
-	.size	.Str4, 8
+	.type	f,@object             # @f
+	.section	.sbss,"aw",@nobits
+	.globl	f
+	.p2align	2
+f:
+	.word	0
+	.size	f, 4
 
-	.type	.Str5,@object           # @.Str5
-	.section	.rodata,"a",@progbits
-	.globl	.Str5
-.Str5:
-	.asciz	"(1 << 3) * y: "
-	.size	.Str5, 15
+	.type	i,@object             # @i
+	.section	.sbss,"aw",@nobits
+	.globl	i
+	.p2align	2
+i:
+	.word	0
+	.size	i, 4
 
-	.type	.Str6,@object           # @.Str6
-	.section	.rodata,"a",@progbits
-	.globl	.Str6
-.Str6:
-	.asciz	"( "
-	.size	.Str6, 3
+	.type	j,@object             # @j
+	.section	.sbss,"aw",@nobits
+	.globl	j
+	.p2align	2
+j:
+	.word	0
+	.size	j, 4
 
-	.type	.Str7,@object           # @.Str7
-	.section	.rodata,"a",@progbits
-	.globl	.Str7
-.Str7:
-	.asciz	", "
-	.size	.Str7, 3
+	.type	open,@object             # @open
+	.section	.sbss,"aw",@nobits
+	.globl	open
+	.p2align	2
+open:
+	.word	0
+	.size	open, 4
 
-	.type	.Str8,@object           # @.Str8
-	.section	.rodata,"a",@progbits
-	.globl	.Str8
-.Str8:
-	.asciz	" )"
-	.size	.Str8, 3
+	.type	closed,@object             # @closed
+	.section	.sbss,"aw",@nobits
+	.globl	closed
+	.p2align	2
+closed:
+	.word	0
+	.size	closed, 4
 
