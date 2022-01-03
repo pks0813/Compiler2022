@@ -216,7 +216,7 @@ define dso_local i32 @_struct_string_ord(i8* %0, i32 %1) #0 {
 }
 
 ; Function Attrs: noinline nounwind optnone uwtable
-define dso_local i8* @_str_substring(i8* %0, i32 %1, i32 %2) #0 {
+define dso_local i8* @_struct_string_substring(i8* %0, i32 %1, i32 %2) #0 {
   %4 = alloca i8*, align 8
   %5 = alloca i32, align 4
   %6 = alloca i32, align 4

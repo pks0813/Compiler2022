@@ -70,7 +70,7 @@ int _struct_string_ord(char *S,int x){
     return (int)(S[x]);
 }
 
-char* _str_substring(char* str,int left,int right){
+char* _struct_string_substring(char* str,int left,int right){
     char* ans=malloc(sizeof(char)*(right-left+1));
     memcpy(ans,str+left,right-left);
     ans[right-left]='\0';

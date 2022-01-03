@@ -435,10 +435,10 @@ _struct_string_ord:                     # @_struct_string_ord
 	.size	_struct_string_ord, .Lfunc_end14-_struct_string_ord
 	.cfi_endproc
                                         # -- End function
-	.globl	_str_substring          # -- Begin function _str_substring
+	.globl	_struct_string_substring # -- Begin function _struct_string_substring
 	.p2align	2
-	.type	_str_substring,@function
-_str_substring:                         # @_str_substring
+	.type	_struct_string_substring,@function
+_struct_string_substring:               # @_struct_string_substring
 	.cfi_startproc
 # %bb.0:
 	addi	sp, sp, -32
@@ -478,7 +478,7 @@ _str_substring:                         # @_str_substring
 	addi	sp, sp, 32
 	ret
 .Lfunc_end15:
-	.size	_str_substring, .Lfunc_end15-_str_substring
+	.size	_struct_string_substring, .Lfunc_end15-_struct_string_substring
 	.cfi_endproc
                                         # -- End function
 	.type	.L.str,@object          # @.str
