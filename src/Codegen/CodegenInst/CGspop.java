@@ -10,7 +10,7 @@ public class CGspop extends CGInst{
     }
     @Override
     public String toString() {
-        return "addi sp sp "+RealValue;
+        return "addi sp,sp,"+RealValue;
     }
     public void UpDate(){
         if (Minus) RealValue=-Value;
