@@ -23,8 +23,8 @@ public class Main {
     InputStream input = new FileInputStream(namein);
 //    String namell= "test.ll";
 //    OutputStream llOutput=new FileOutputStream(namell);
-//    String names= "test.s";
-//    OutputStream sOutput=new FileOutputStream(names);
+    String names= "output.s";
+    OutputStream sOutput=new FileOutputStream(names);
 
     ProgramNode ASTRoot;
 
@@ -44,7 +44,7 @@ public class Main {
         IRbuilder.visit(ASTRoot);
 //        new IRPrint(IRbuilder,llOutput);
         CGBuilder CGbuilder=new CGBuilder(IRbuilder);
-        CGbuilder.CGPrint(System.out);
+        CGbuilder.CGPrint(sOutput);
     } catch (error er) {
         System.err.println(er.tostring());
         throw new RuntimeException();
