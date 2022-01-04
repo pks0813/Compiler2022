@@ -60,9 +60,9 @@ public class CGBuilder {
             while (true) {
                 ColorGraph Color=new ColorGraph(Func,17);
                 if (Color.FindPlan==true) {
-                    if (Func.Name=="main")
-                    for (var Name:Color.ColorMap.keySet())
-                        System.out.println(Name+"     "+Color.ColorMap.get(Name));
+//                    if (Func.Name=="main")
+//                    for (var Name:Color.ColorMap.keySet())
+//                        System.out.println(Name+"     "+Color.ColorMap.get(Name));
                     AdvanceColor(Func,Color.ColorMap);
                     break;
                 }
@@ -466,7 +466,7 @@ public class CGBuilder {
             {
                 if (Inst.rs1 instanceof VirtualReg) {
                     boolean Replace = true;
-                    if (InMemList!=null) InMemList.contains(((VirtualReg) Inst.rs1).Name);
+                    if (InMemList!=null) Replace=InMemList.contains(((VirtualReg) Inst.rs1).Name);
                     if (Replace) {
                         VirtualReg ReplaceReg = Func.NewRegister();
                         Block.AddPre(Inst, new CGload(CGload.OP.lw, ReplaceReg, -Func.RegID(((VirtualReg) Inst.rs1).Name), s0));
@@ -475,7 +475,7 @@ public class CGBuilder {
                 }
                 if (Inst.rs2 instanceof VirtualReg) {
                     boolean Replace= true;
-                    if (InMemList!=null) InMemList.contains(((VirtualReg) Inst.rs2).Name);
+                    if (InMemList!=null) Replace=InMemList.contains(((VirtualReg) Inst.rs2).Name);
                     if (Replace) {
                         VirtualReg ReplaceReg = Func.NewRegister();
                         Block.AddPre(Inst, new CGload(CGload.OP.lw, ReplaceReg, - Func.RegID(((VirtualReg) Inst.rs2).Name), s0));
@@ -484,7 +484,7 @@ public class CGBuilder {
                 }
                 if (Inst.rd instanceof VirtualReg) {
                     boolean Replace = true;
-                    if (InMemList!=null) InMemList.contains(((VirtualReg) Inst.rd).Name);
+                    if (InMemList!=null) Replace=InMemList.contains(((VirtualReg) Inst.rd).Name);
                     if (Replace) {
                         VirtualReg ReplaceReg = Func.NewRegister();
                         Block.AddNex(Inst, new CGstore(CGstore.OP.sw, ReplaceReg, -Func.RegID(((VirtualReg) Inst.rd).Name), s0));
