@@ -123,7 +123,7 @@ public class ColorGraph {
                 }
             }
         //try
-        while (true) {
+        {
             flat = true;
             while (flat) {
                 flat = false;
@@ -135,17 +135,20 @@ public class ColorGraph {
                     }
             }
 
-            flat = false;
+            int mxDu = 0;
+            String mxID = null;
             for (GraphNode Node : VirtualRegMap.values())
                 if (Node.state == GraphNode.statetype.alive) {
-                    Node.state = GraphNode.statetype.inmem;
-                    PutInMemList.add(Node.Name);
-                    flat = true;
-                    break;
+                    if (Node.Du() > mxDu) {
+                        mxDu = Node.Du();
+                        mxID = Node.Name;
+                    }
                 }
-            if (flat == false)
-                break;
+            if (mxID!=null)
+            PutInMemList.add(mxID);
         }
+
+
         if (PutInMemList.isEmpty())
         {
             FindPlan=true;
