@@ -1,6 +1,11 @@
-int main(){
-    int x=6,y=7;
-    x=(x+y);
+void test(int[] t){
+   t=new int[5];
+   t[1]=1;
+}
 
-    printlnInt(x-y);
+int main() {
+   int[][] x;
+   x=new int[10][];
+   test(x[0]);
+   printlnInt(x[0][1]);
 }

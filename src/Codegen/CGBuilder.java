@@ -418,9 +418,9 @@ public class CGBuilder {
                 NowBlock.AddBack(new CGjump(_Inst.IfTrue+NowFunc.FuncID));
             else {
                 VirtualReg Cond;
-                if (_Inst.Cond instanceof IRBoolConst) {
+                if (_Inst.Cond instanceof IRConst) {
                     Cond = NowFunc.NewRegister();
-                    NowBlock.AddBack(new CGLi(Cond, new IntImm(((IRBoolConst) _Inst.Cond).val)));
+                    NowBlock.AddBack(new CGLi(Cond, new IntImm(((IRConst) _Inst.Cond).val)));
                 } else Cond = new VirtualReg(((IRTmpVar) _Inst.Cond).Name);
                 NowBlock.AddBack(new CGbr(CGbr.type.bnez, Cond, _Inst.IfTrue+NowFunc.FuncID));
                 NowBlock.AddBack(new CGjump(_Inst.IfElse+NowFunc.FuncID));

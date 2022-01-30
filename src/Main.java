@@ -23,13 +23,13 @@ public class Main {
     InputStream input = new FileInputStream(namein);
     String namell= "test.ll";
     OutputStream llOutput=new FileOutputStream(namell);
-    String names= "output.s";
+    String names= "test.s";
     OutputStream sOutput=new FileOutputStream(names);
 
     ProgramNode ASTRoot;
 
     try {
-        MXLexer lexer = new MXLexer(CharStreams.fromStream(System.in));
+        MXLexer lexer = new MXLexer(CharStreams.fromStream(input));
         lexer.removeErrorListeners();
         lexer.addErrorListener(new MXErrorListener());
         MXParser parser = new MXParser(new CommonTokenStream(lexer));
