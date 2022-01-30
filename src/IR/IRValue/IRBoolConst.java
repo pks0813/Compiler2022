@@ -4,7 +4,6 @@ import IR.IRType.AllType;
 import IR.IRType.IRIntType;
 
 public class IRBoolConst extends IRConst{
-    public int val;
     public IRBoolConst(int _val){
         super(new IRIntType(1));
         if (_val!=0 && _val!=1) ;//Add error
