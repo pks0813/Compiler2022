@@ -119,14 +119,14 @@ public class CGBuilder {
 ////            InitBlock.AddBack(new CGImmOp(CGImmOp.OP.addi,new VirtualReg(((IRTmpVar)_inst.Beloaded).Name),new PhysicalReg("s0"),-NowFunc.NowOffset));
 //            NowFunc.ConstReg.put(((IRTmpVar)_inst.Beloaded).Name,-NowFunc.NowOffset);
 //        }
+        InitBlock.AddBack(new CGspop(true));
         for (Integer i=0;i<Math.min(Func.ParaList.size(),8);i++)
             InitBlock.AddBack(new CGmv(new VirtualReg("alloca"+i),new PhysicalReg("a"+i.toString())));
         if (Func.ParaList.size()>8) {
             for (Integer i = 8; i < Func.ParaList.size(); i++) {
-                InitBlock.AddBack(new CGload(CGload.OP.lw,new VirtualReg("alloca"+i),(i-8)*4,sp));
+                InitBlock.AddBack(new CGload(CGload.OP.lw,new VirtualReg("alloca"+i),(i-8)*4,new PhysicalReg("s0")));
             }
         }
-        InitBlock.AddBack(new CGspop(true));
         InitBlock.AddBack(new CGmv(new VirtualReg("raAddr"),ra));
         InitBlock.AddBack(new CGjump("entry"+NowFunc.FuncID));
         NowFunc.BlockList.add(InitBlock);
@@ -617,9 +617,9 @@ public class CGBuilder {
         }
     }
     public void AdvanceColor(CGFunc Func,Map<String,Integer> ColorMap){
-        for (Map.Entry<String,Integer> entry : ColorMap.entrySet()) {
-            System.out.println("key = " + entry.getKey() + ", value = " + entry.getValue());
-        }
+//        for (Map.Entry<String,Integer> entry : ColorMap.entrySet()) {
+//            System.out.println("key = " + entry.getKey() + ", value = " + entry.getValue());
+//        }
         for (var Block:Func.BlockList)
             for (CGInst Inst=Block.Head;Inst!=null;Inst=Inst.NexInst){
                 if (Inst.rs1 instanceof VirtualReg)

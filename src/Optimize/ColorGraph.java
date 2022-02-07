@@ -162,7 +162,7 @@ public class ColorGraph {
                 GraphNode NowNode=NodeStack.get(i);
                 for (var LinkNode:NowNode.Edge.values())
                 {
-                    System.out.println(LinkNode.Name);
+//                    System.out.println(LinkNode.Name);
                     if (LinkNode.state== GraphNode.statetype.havecolor && LinkNode.color!=-1)
                         ColorUse[LinkNode.color]=true;
                 }

@@ -1,34 +1,28 @@
 /*
 Test Package: Codegen
-Author: 14' Shichao Xu
-Time: 2020-01-25
+Author: Admin
+Time: 2020-02-02
 Input:
 === input ===
 === end ===
 Output:
 === output ===
-1024
 === end ===
-ExitCode: 0
+ExitCode: 13
 InstLimit: -1
-Origin Package: Codegen Pretest-533
+Origin Package: Codegen Pretest-582
 */
-int qpow(int a,int p,int mod) {
-    int t = 1;
-    int y = a;
-    while(p>0){
-        if((p&1) == 1)t=t*y % mod;
-        y=y*y % mod;
-        p=p / 2;
+int tak(int x, int y, int z) {
+    if(y < x) {
+        return 1 + tak( tak(x - 1, y , z),
+            tak(y - 1, z , x),
+            tak(z - 1, x , y)
+        );
+    } else {
+       return z;
     }
-    return t;
 }
 
-
-
-
-
 int main() {
-    println(toString(qpow(2,10,10000)));
-    return 0;
+    return tak(18,12,6);
 }
