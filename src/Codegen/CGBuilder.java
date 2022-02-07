@@ -111,20 +111,19 @@ public class CGBuilder {
         CGBlock InitBlock=new CGBlock(Func.Name);
 //        InitBlock.AddBack(new CGmv(new VirtualReg("s0Addr"),s0));
         InitBlock.AddBack(new CGmv(new PhysicalReg("s0"),sp));
-        for (var AllocaInst:Func.FuncAlloc)
-        if (AllocaInst instanceof alloca)
-        {
-            alloca _inst=(alloca) AllocaInst;
-            NowFunc.NowOffset+=4;
-//            InitBlock.AddBack(new CGImmOp(CGImmOp.OP.addi,new VirtualReg(((IRTmpVar)_inst.Beloaded).Name),new PhysicalReg("s0"),-NowFunc.NowOffset));
-            NowFunc.ConstReg.put(((IRTmpVar)_inst.Beloaded).Name,-NowFunc.NowOffset);
-        }
+//        for (var AllocaInst:Func.FuncAlloc)
+//        if (AllocaInst instanceof alloca)
+//        {
+//            alloca _inst=(alloca) AllocaInst;
+//            NowFunc.NowOffset+=4;
+////            InitBlock.AddBack(new CGImmOp(CGImmOp.OP.addi,new VirtualReg(((IRTmpVar)_inst.Beloaded).Name),new PhysicalReg("s0"),-NowFunc.NowOffset));
+//            NowFunc.ConstReg.put(((IRTmpVar)_inst.Beloaded).Name,-NowFunc.NowOffset);
+//        }
         for (Integer i=0;i<Math.min(Func.ParaList.size(),8);i++)
-            InitBlock.AddBack(new CGstore(CGstore.OP.sw,new PhysicalReg("a"+i.toString()),-(4+i*4),sp));
+            InitBlock.AddBack(new CGmv(new VirtualReg("alloca"+i),new PhysicalReg("a"+i.toString())));
         if (Func.ParaList.size()>8) {
             for (Integer i = 8; i < Func.ParaList.size(); i++) {
-                InitBlock.AddBack(new CGload(CGload.OP.lw,a0,(i-8)*4,sp));
-                InitBlock.AddBack(new CGstore(CGstore.OP.sw, a0, -(12+i*4), sp));
+                InitBlock.AddBack(new CGload(CGload.OP.lw,new VirtualReg("alloca"+i),(i-8)*4,sp));
             }
         }
         InitBlock.AddBack(new CGspop(true));
@@ -315,6 +314,11 @@ public class CGBuilder {
         if (Inst instanceof load) {
             load _Inst = (load) Inst;
             VirtualReg rd = new VirtualReg(((IRTmpVar) _Inst.LoadTo).Name);
+            if (_Inst.Change)
+            {
+                NowBlock.AddBack(new CGmv(rd,new VirtualReg(((IRTmpVar)_Inst.LoadPointer).Name)));
+                return;
+            }
             if (_Inst.LoadPointer instanceof IRTmpVar) {
                 if (NowFunc.ConstReg.containsKey(((IRTmpVar) _Inst.LoadPointer).Name))
                     NowBlock.AddBack(new CGload(CGload.OP.lw, rd, NowFunc.ConstReg.get(((IRTmpVar) _Inst.LoadPointer).Name), s0));
@@ -331,6 +335,32 @@ public class CGBuilder {
         if (Inst instanceof store) {
             store _Inst = (store) Inst;
             CGReg Value=null;
+            if (_Inst.Change) {
+                VirtualReg rd = new VirtualReg(((IRTmpVar) _Inst.StorePointer).Name);
+                if (_Inst.StoreValue instanceof IRTmpVar)
+                    NowBlock.AddBack(new CGmv(rd, new VirtualReg(((IRTmpVar) (_Inst.StoreValue)).Name)));
+                else if (_Inst.StoreValue instanceof IRConst) {
+                    int val = ((IRConst) _Inst.StoreValue).val;
+                    Value = rd;
+                    if (Math.abs(val) < 2048)
+                        NowBlock.AddBack(new CGLi(Value, new IntImm(val)));
+                    else {
+                        int q = Math.abs(val);
+                        NowBlock.AddBack(new CGLi(Value, new IntImm(q >> 22)));
+                        q %= (1 << 22);
+                        NowBlock.AddBack(new CGImmOp(CGImmOp.OP.slli, Value, Value, 11));
+                        NowBlock.AddBack(new CGImmOp(CGImmOp.OP.addi, Value, Value, q >> 11));
+                        q %= (1 << 11);
+                        NowBlock.AddBack(new CGImmOp(CGImmOp.OP.slli, Value, Value, 11));
+                        NowBlock.AddBack(new CGImmOp(CGImmOp.OP.addi, Value, Value, q));
+                        if (val < 0)
+                            NowBlock.AddBack(new CGbinaryOp(CGbinaryOp.OP.sub, Value, zero, Value));
+                    }
+                } else if (_Inst.StoreValue instanceof IRGlobalVar)
+                    NowBlock.AddBack(new CGla(rd, new GlobalReg(((IRGlobalVar) (_Inst.StoreValue)).Name)));
+                return;
+            }
+
             if (_Inst.StoreValue instanceof IRConst)
             {
                 int val=((IRConst) _Inst.StoreValue).val;
@@ -587,6 +617,9 @@ public class CGBuilder {
         }
     }
     public void AdvanceColor(CGFunc Func,Map<String,Integer> ColorMap){
+        for (Map.Entry<String,Integer> entry : ColorMap.entrySet()) {
+            System.out.println("key = " + entry.getKey() + ", value = " + entry.getValue());
+        }
         for (var Block:Func.BlockList)
             for (CGInst Inst=Block.Head;Inst!=null;Inst=Inst.NexInst){
                 if (Inst.rs1 instanceof VirtualReg)

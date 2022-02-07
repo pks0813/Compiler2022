@@ -209,7 +209,7 @@ define dso_local i32 @_struct_string_ord(i8* %0, i32 %1) #0 {
   %5 = load i8*, i8** %3, align 8
   %6 = load i32, i32* %4, align 4
   %7 = sext i32 %6 to i64
-  %8 = getelementptr inbounds i8, i8* %5, i64 %7
+  %8 = getelementptr inbounds i8, i8*  %5, i64 %7
   %9 = load i8, i8* %8, align 1
   %10 = sext i8 %9 to i32
   ret i32 %10

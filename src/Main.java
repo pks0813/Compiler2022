@@ -3,6 +3,7 @@ import AST.ProgramNode;
 import Codegen.CGBuilder;
 import FrontEnd.ASTBuilder;
 import FrontEnd.SemanticCheck;
+import IR.DeleteSSA;
 import IR.IRBuilder;
 import IR.IRPrint;
 import Parse.MXLexer;
@@ -42,6 +43,7 @@ public class Main {
         SemanticAns.visit(ASTRoot);
         IRBuilder IRbuilder=new IRBuilder(SemanticAns.WolrdScope);
         IRbuilder.visit(ASTRoot);
+        new DeleteSSA().SSA(IRbuilder);
         new IRPrint(IRbuilder,llOutput);
         CGBuilder CGbuilder=new CGBuilder(IRbuilder);
         CGbuilder.CGPrint(sOutput);
