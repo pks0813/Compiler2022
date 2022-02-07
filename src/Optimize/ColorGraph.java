@@ -31,12 +31,8 @@ public class ColorGraph {
         for (CGBlock Block : Func.BlockList) {
             for (CGInst Inst = Block.Head; Inst != null; Inst = Inst.NexInst) {
                 if (Inst.rd instanceof VirtualReg)
-                    VirtualRegMap.put(((VirtualReg) Inst.rd).Name, new GraphNode(((VirtualReg) Inst.rd).Name));
-                if (Inst.rs1 instanceof VirtualReg)
-                    VirtualRegMap.get(((VirtualReg) Inst.rs1).Name).use=true;
-                if (Inst.rs2 instanceof VirtualReg)
-                    VirtualRegMap.get(((VirtualReg) Inst.rs2).Name).use=true;
-
+                    if (VirtualRegMap.get(((VirtualReg) Inst.rd).Name)==null)
+                        VirtualRegMap.put(((VirtualReg) Inst.rd).Name, new GraphNode(((VirtualReg) Inst.rd).Name));
                 if (Inst instanceof CGret) continue;
                 else if (Inst instanceof CGjump) {
                     CGjump _Inst = (CGjump) Inst;
@@ -68,7 +64,13 @@ public class ColorGraph {
                 }
             }
         }
-
+        for (CGBlock Block : Func.BlockList)
+            for (CGInst Inst = Block.Head; Inst != null; Inst = Inst.NexInst) {
+                if (Inst.rs1 instanceof VirtualReg)
+                    VirtualRegMap.get(((VirtualReg) Inst.rs1).Name).use = true;
+                if (Inst.rs2 instanceof VirtualReg)
+                    VirtualRegMap.get(((VirtualReg) Inst.rs2).Name).use = true;
+            }
 
         //Expend
         boolean flat = true;
@@ -160,7 +162,8 @@ public class ColorGraph {
                 GraphNode NowNode=NodeStack.get(i);
                 for (var LinkNode:NowNode.Edge.values())
                 {
-                    if (LinkNode.state== GraphNode.statetype.havecolor)
+                    System.out.println(LinkNode.Name);
+                    if (LinkNode.state== GraphNode.statetype.havecolor && LinkNode.color!=-1)
                         ColorUse[LinkNode.color]=true;
                 }
                 NowNode.state= GraphNode.statetype.havecolor;
