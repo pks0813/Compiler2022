@@ -72,12 +72,13 @@ public class ColorGraph {
                     VirtualRegMap.get(((VirtualReg) Inst.rs2).Name).use = true;
             }
 
+        System.out.println("Begin Expand");
         //Expend
         boolean flat = true;
         while (flat) {
             flat = false;
             for (CGBlock Block : Func.BlockList)
-                for (CGInst Inst = Block.Head; Inst != null; Inst = Inst.NexInst) {
+                for (CGInst Inst = Block.Tail; Inst != null; Inst = Inst.PreInst) {
                     for (CGInst NexInst : Inst.AllNex) {
                         for (String UseName : NexInst.PreAliveList)
                             if (Inst.PreAliveList.contains(UseName) == false &&
@@ -88,7 +89,7 @@ public class ColorGraph {
                     }
                 }
         }
-
+        System.out.println("Finish Expand");
         //Find Call
         boolean NeedClear=false;
         for (CGBlock Block : Func.BlockList)
@@ -125,6 +126,7 @@ public class ColorGraph {
                 }
             }
         //try
+        while (true)
         {
             flat = true;
             while (flat) {
@@ -146,8 +148,11 @@ public class ColorGraph {
                         mxID = Node.Name;
                     }
                 }
-            if (mxID!=null)
-            PutInMemList.add(mxID);
+            if (mxID!=null) {
+                PutInMemList.add(mxID);
+                VirtualRegMap.get(mxID).state= GraphNode.statetype.inmem;
+            }
+            else break;
         }
 
 
