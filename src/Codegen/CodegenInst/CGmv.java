@@ -15,6 +15,8 @@ public class CGmv extends CGInst{
 
     @Override
     public String toString() {
-        return "mv "+rd+" , "+rs1;
+        if (!rd.toString().equals(rs1.toString()))
+            return "mv "+rd+" , "+rs1;
+        else return "";
     }
 }
